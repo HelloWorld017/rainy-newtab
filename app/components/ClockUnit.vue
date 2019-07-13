@@ -31,6 +31,7 @@
 		}
 
 		&__unit {
+			font-family: 'Noto Sans KR', sans-serif;
 			font-weight: 400;
 			font-size: 1vw;
 		}
@@ -39,7 +40,7 @@
 
 <script>
 	import ClockNumber from "./ClockNumber.vue";
-	
+
 	export default {
 		props: {
 			unitName: {

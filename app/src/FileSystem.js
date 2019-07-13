@@ -1,4 +1,4 @@
-const ImageFileSystem = {
+const FileSystem = {
 	async addImage(image) {
 		const canvas = document.createElement('canvas');
 		canvas.width = image.naturalWidth;
@@ -17,39 +17,56 @@ const ImageFileSystem = {
 		}
 
 		const digest = crypto.subtle.digest('sha-1', imageArray);
-		const keys = await this.keys();
+		const keys = await this.keyImages();
 		if(!keys.includes(digest)) {
 			keys.push(digest);
 		}
 
-		await this.setRaw(`image/image-${digest}`, imageArray);
-		await this.keys(keys);
+		await this.setRaw(`theme/image-${digest}`, imageArray);
+		await this.keyImages(keys);
 	},
 
 	async getImage(hash) {
-		const imageArray = await this.getRaw(`image/image-${hash}`);
+		const imageArray = await this.getRaw(`theme/image-${hash}`);
 		if(!imageArray) return null;
 
 		return new Blob(imageArray, {type: 'image/png'});
 	},
 
 	async deleteImage(hash) {
-		await this.deleteRaw(`image/image-${hash}`);
+		await this.deleteRaw(`theme/image-${hash}`);
 	},
 
-	getRaw(key) {
+	async keyImages(newValue) {
+		if(!this.isExtension) return [];
+
+		if(Array.isArray(newValue)) {
+			await this.setRaw('theme/keys', newValue);
+			return newValue;
+		}
+
+		const keys = await this.getRaw('theme/keys', []);
+		return keys;
+	},
+
+	getRaw(key, defaultValue = null) {
+		if(!this.isExtension) return defaultValue;
+
 		return new Promise((resolve, reject) => {
 			chrome.storage.local.get(key, value => {
 				if(!value && chrome.runtime.lastError) {
-					return reject(chrome.runtime.lastError);
+					return resolve(defaultValue);
 				}
 
-				resolve(value[key]);
+				const valueKey = value[key];
+				resolve(valueKey === undefined ? defaultValue : valueKey);
 			});
 		});
 	},
 
 	setRaw(key, value) {
+		if(!this.isExtension) return Promise.resolve();
+
 		const setObject = {};
 		setObject[key] = value;
 
@@ -65,6 +82,8 @@ const ImageFileSystem = {
 	},
 
 	deleteRaw(key) {
+		if(!this.isExtension) return Promise.resolve();
+
 		return new Promise((resolve, reject) => {
 			chrome.storage.local.remove(key, () => {
 				if(chrome.runtime.lastError) {
@@ -76,17 +95,9 @@ const ImageFileSystem = {
 		});
 	},
 
-	async keys(newValue) {
-		if(Array.isArray(newValue)) {
-			await this.setRaw('image/keys', newValue);
-			return newValue;
-		}
-
-		const keys = await this.getRaw('image/keys');
-		if(keys === undefined) return await this.keys([]);
-
-		return keys;
+	get isExtension() {
+		return !!chrome.storage;
 	}
 };
 
-export default ImageFileSystem;
+export default FileSystem;

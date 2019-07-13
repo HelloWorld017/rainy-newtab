@@ -4,8 +4,8 @@
   "description": "A neat new tab extension for chrome",
   "main": "manifest.json",
   "scripts": {
-    "dev": "parcel app/index.html -d dist",
-    "build": "parcel build app/index.html",
+    "dev": "parcel app/index.html -d dist --public-url ./",
+    "build": "parcel build app/index.html -d dist --public-url ./",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/HelloWorld017/rainy-newtab#readme",
   "devDependencies": {
+    "@babel/core": "^7.5.4",
     "@babel/plugin-transform-runtime": "^7.5.0",
     "@babel/preset-env": "^7.5.4",
     "@vue/component-compiler-utils": "^3.0.0",
@@ -35,6 +36,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.5.4",
+    "@mdi/font": "^3.7.95",
+    "typeface-notosans-kor": "^1.0.2",
     "vue": "^2.6.10"
   }
 }

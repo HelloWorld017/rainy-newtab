@@ -1,7 +1,7 @@
 <template>
-	<div class="Background" :style="{backgroundImage}">
+	<main class="Background" :style="{backgroundImage}" @contextmenu.prevent="showOptions">
 		<slot></slot>
-	</div>
+	</main>
 </template>
 
 <style lang="less" scoped>
@@ -16,25 +16,39 @@
 </style>
 
 <script>
-	import ImageFileSystem from "../src/ImageFileSystem";
+	import FileSystem from "../src/FileSystem";
 
 	export default {
 		data() {
 			return {
-				url: ''
+				option: false,
+				url: 'https://picsum.photos/1920/1080'
 			};
 		},
 
 		computed: {
 			backgroundImage() {
-				return `src(${this.url})`;
+				return `url(${this.url})`;
 			}
 		},
 
 		async created() {
-			const keys = await ImageFileSystem.keys();
+			const style = await FileSystem.getRaw(`theme/style-${hash}`, {
+				"clock-color": "#f1f2f3",
+				"clock-background": "transparent",
+				"weather-color": "#f1f2f3",
+				"search-color": "#202020",
+				"search-text-color": "#f1f2f3"
+			});
+
+			Object.keys(style).forEach(k => {
+				console.log(`--${k}`, style[k]);
+				document.documentElement.style.setProperty(`--${k}`, style[k]);
+			});
+
+			const keys = await FileSystem.keyImages();
 			const hash = keys[Math.floor(Math.random() * keys.length)];
-			const imageBlob = await ImageFileSystem.getImage(hash);
+			const imageBlob = await FileSystem.getImage(hash);
 			if(!imageBlob) return;
 
 			const imageUrl = URL.createObjectURL(imageBlob);
@@ -43,6 +57,12 @@
 
 		destroyed() {
 			if(this.url) URL.revokeObjectURL(this.url);
+		},
+
+		methods: {
+			showOptions() {
+				this.option = true;
+			}
 		}
 	};
 </script>

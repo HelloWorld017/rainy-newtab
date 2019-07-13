@@ -1,18 +1,27 @@
 <template>
 	<section class="Clock">
-		<clock-unit unit-name="Date" :current="current.getDate()" animate />
-		<clock-divider divider="/"/>
-		<clock-unit unit-name="Hours" :current="current.getHours()" animate />
-		<clock-divider />
-		<clock-unit unit-name="Minutes" :current="current.getMinutes()" animate />
-		<clock-divider />
-		<clock-unit unit-name="Seconds" :current="current.getSeconds()" animate />
+		<clock-unit unit-name="Date" :current="current.getDate()" animate></clock-unit>
+		<clock-divider divider="/"></clock-divider>
+		<clock-unit unit-name="Hours" :current="current.getHours()" animate></clock-unit>
+		<clock-divider></clock-divider>
+		<clock-unit unit-name="Minutes" :current="current.getMinutes()" animate></clock-unit>
+		<clock-divider></clock-divider>
+		<clock-unit unit-name="Seconds" :current="current.getSeconds()" animate></clock-unit>
 	</section>
 </template>
 
 <style scoped>
 	.Clock {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+
 		display: flex;
+		color: var(--clock-color);
+		background: var(--clock-background);
+		font-family: 'Roboto', sans-serif;
+		font-weight: 100;
 	}
 
 	@media screen and (max-width: 768px) {

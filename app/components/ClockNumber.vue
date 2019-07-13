@@ -25,11 +25,13 @@
 		}
 
 		&-enter {
+			opacity: 0;
 			transform: translateX(-6vw);
 		}
 
 		&-leave-to {
 			transform: skewX(40deg) translateY(6vw);
+			opacity: 0;
 		}
 	}
 </style>
