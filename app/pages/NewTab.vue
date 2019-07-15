@@ -54,7 +54,7 @@
 
 		&-enter, &-leave-to {
 			opacity: 0;
-			transform: translate(-50%, -50%) translateY(100px);
+			transform: translateY(100px);
 		}
 	}
 

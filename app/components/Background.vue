@@ -1,6 +1,13 @@
 <template>
-	<main class="Background" :style="{backgroundImage}" @contextmenu.prevent="onContext">
-		<slot></slot>
+	<main class="Background">
+		<transition name="Fade">
+			<div class="Background__image" :style="{backgroundImage}" v-if="readyToShow">
+			</div>
+		</transition>
+
+		<div class="Background__content" @contextmenu.prevent="onContext">
+			<slot></slot>
+		</div>
 	</main>
 </template>
 
@@ -9,9 +16,33 @@
 		width: 100%;
 		height: 100%;
 
-		background-size: cover;
-		background-position: center;
-		background-color: #202020;
+		&__content {
+			position: fixed;
+			top: 0;
+			left: 0;
+
+			width: 100%;
+			height: 100%;
+		}
+
+		&__image {
+			width: 100%;
+			height: 100%;
+
+			background-size: cover;
+			background-position: center;
+			background-color: #303030;
+		}
+	}
+
+	.Fade {
+		&-enter-active, &-leave-active {
+			transition: all .6s ease;
+		}
+
+		&-enter, &-leave-to {
+			opacity: 0;
+		}
 	}
 </style>
 
@@ -22,7 +53,8 @@
 	export default {
 		data() {
 			return {
-				url: 'https://picsum.photos/1920/1080'
+				url: '',
+				readyToShow: false
 			};
 		},
 
@@ -33,23 +65,30 @@
 		},
 
 		async created() {
+			const keys = await FileSystem.keyImages();
+			const hash = keys[Math.floor(Math.random() * keys.length)];
+
 			const style = await FileSystem.getRaw(`theme/style-${hash}`, DefaultStyle);
 
 			Object.keys(style).forEach(k => {
 				document.documentElement.style.setProperty(`--${k}`, style[k]);
 			});
 
-			const keys = await FileSystem.keyImages();
-			const hash = keys[Math.floor(Math.random() * keys.length)];
-			const imageBlob = await FileSystem.getImage(hash);
-			if(!imageBlob) return;
+			const imageData = await FileSystem.getImage(hash);
+			// const imageUrl = await FileSystem.getImage(hash);
 
-			const imageUrl = URL.createObjectURL(imageBlob);
-			this.url = imageUrl;
+			if(imageData) {
+				const imageUrl = URL.createObjectURL(FileSystem.dataUrlToBlob(imageData));
+				this.url = imageUrl;
+			} else {
+				this.url = 'https://picsum.photos/1920/1080';
+			}
+
+			this.readyToShow = true;
 		},
 
 		destroyed() {
-			if(this.url) URL.revokeObjectURL(this.url);
+			if(this.url && this.url.startsWith('blob://')) URL.revokeObjectURL(this.url);
 		},
 
 		methods: {

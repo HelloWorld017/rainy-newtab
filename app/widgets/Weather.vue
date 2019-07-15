@@ -19,8 +19,10 @@
 
 <style lang="less" scoped>
 	.Weather {
+		background: var(--weather-background);
 		color: var(--weather-color);
 		margin-bottom: 30px;
+		padding: 20px;
 		text-align: right;
 
 		&__weather {

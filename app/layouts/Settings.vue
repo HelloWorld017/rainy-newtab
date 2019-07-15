@@ -3,7 +3,7 @@
 		<a class="Settings__close" @click.prevent="close">
 			<i class="mdi mdi-close"></i>
 		</a>
-		
+
 		<settings-theme></settings-theme>
 	</section>
 </template>
@@ -11,9 +11,8 @@
 <style lang="less" scoped>
 	.Settings {
 		position: fixed;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
+		top: 10vh;
+		left: 10vw;
 
 		background: #f1f2f3;
 		width: 80vw;
