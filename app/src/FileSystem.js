@@ -1,5 +1,5 @@
 const FileSystem = {
-	encodeImage(canvas) {
+	async encodeImage(canvas) {
 		const dataUrl = canvas.toDataURL();
 		const byteString = atob(dataUrl.split(',')[1]);
 		const buffer = new ArrayBuffer(byteString.length);
@@ -11,8 +11,39 @@ const FileSystem = {
 
 		return {
 			imageArray,
-			digest: crypto.subtle.digest('sha-1', imageArray)
+			digest: this.bufferToHex(await crypto.subtle.digest('sha-1', imageArray))
 		};
+	},
+
+	bufferToString(buf) {
+		return new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.onload = ev => resolve(event.target.result);
+			reader.onerror = ev => reject(event.target.error);
+			reader.readAsBinaryString(new Blob([buf], {type: 'application/octet-stream'}));
+		});
+	},
+
+	stringToBuffer(str) {
+		const buf = new ArrayBuffer(str.length * 2);
+		const bufView = new Uint16Array(buf);
+		for (let i = 0, strLen = str.length; i < strLen; i++) {
+			bufView[i] = str.charCodeAt(i);
+		}
+		return buf;
+	},
+
+	bufferToHex(buf) {
+		const bufView = new Uint8Array(buf);
+		const hex = '0123456789abcdef';
+		let str = '';
+
+		for(let i = 0; i < bufView.length; i++) {
+			const v = buf[i];
+			str += hex[v >> 4] + hex[v & 15];
+		}
+
+		return str;
 	},
 
 	async addImage(image) {
@@ -25,7 +56,7 @@ const FileSystem = {
 		const ctx = canvas.getContext('2d');
 		ctx.drawImage(image, 0, 0);
 
-		const {digest, imageArray} = this.encodeImage(canvas);
+		const {digest, imageArray} = await this.encodeImage(canvas);
 
 		const thumbCanvas = document.createElement('canvas');
 		thumbCanvas.width = 300;
@@ -45,15 +76,15 @@ const FileSystem = {
 			thumbCtx.drawImage(image, -x, 0, resizeWidth, resizeHeight);
 		}
 
-		const {imageArray: thumbImageArray} = this.encodeImage(thumbCanvas);
+		const {imageArray: thumbImageArray} = await this.encodeImage(thumbCanvas);
 
 		const keys = await this.keyImages();
 		if(!keys.includes(digest)) {
 			keys.push(digest);
 		}
 
-		await this.setRaw(`theme/image-${digest}`, imageArray);
-		await this.setRaw(`theme/thumb-${digest}`, thumbImageArray);
+		await this.setRaw(`theme/image-${digest}`, await this.bufferToString(imageArray));
+		await this.setRaw(`theme/thumb-${digest}`, await this.bufferToString(thumbImageArray));
 		await this.keyImages(keys);
 	},
 
@@ -61,7 +92,7 @@ const FileSystem = {
 		const imageArray = await this.getRaw(`theme/${thumbnail ? 'thumb' : 'image'}-${hash}`);
 		if(!imageArray) return null;
 
-		return new Blob(imageArray, {type: 'image/png'});
+		return new Blob([this.stringToBuffer(imageArray)], {type: 'image/png'});
 	},
 
 	async deleteImage(hash) {

@@ -56,7 +56,7 @@
 
 				await FileSystem.addImage(image);
 				URL.revokeObjectURL(image);
-				
+
 				await this.refresh();
 			},
 
@@ -71,7 +71,14 @@
 					themes.push({thumb, style});
 				}
 
+				this.revoke();
 				this.themes = themes;
+			},
+
+			revoke() {
+				for (let theme of this.themes) {
+					URL.revokeObjectURL(theme.thumb);
+				}
 			}
 		},
 
@@ -80,9 +87,7 @@
 		},
 
 		destroyed() {
-			for (let theme of this.themes) {
-				URL.revokeObjectURL(theme.thumb);
-			}
+			this.revoke();
 		},
 
 		components: {

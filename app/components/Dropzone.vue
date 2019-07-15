@@ -2,7 +2,7 @@
 	<label class="Dropzone" :class="{'Dropzone--drop': isDragOver}"
 		@dragover="dragOver" @dragleave="dragLeave" @drop="drop">
 
-		<input class="Dropzone__upload" type="file" ref="upload" @change="handleUpload">
+		<input class="Dropzone__upload" type="file" ref="upload" @change="handleUploadDialog">
 		<i class="Dropzone__icon mdi mdi-plus"></i>
 		<slot></slot>
 	</label>
@@ -71,7 +71,7 @@
 				if(files.length < 1) return;
 
 				this.handleUpload(files[0]);
-				this.$refs.upload.files = [];
+				this.$refs.upload.value = '';
 			},
 
 			handleUpload(file) {
