@@ -1,5 +1,5 @@
 <template>
-	<main class="Background" :style="{backgroundImage}" @contextmenu.prevent="showOptions">
+	<main class="Background" :style="{backgroundImage}" @contextmenu.prevent="onContext">
 		<slot></slot>
 	</main>
 </template>
@@ -16,12 +16,12 @@
 </style>
 
 <script>
+	import DefaultStyle from "../src/DefaultStyle";
 	import FileSystem from "../src/FileSystem";
 
 	export default {
 		data() {
 			return {
-				option: false,
 				url: 'https://picsum.photos/1920/1080'
 			};
 		},
@@ -33,16 +33,9 @@
 		},
 
 		async created() {
-			const style = await FileSystem.getRaw(`theme/style-${hash}`, {
-				"clock-color": "#f1f2f3",
-				"clock-background": "transparent",
-				"weather-color": "#f1f2f3",
-				"search-color": "#202020",
-				"search-text-color": "#f1f2f3"
-			});
+			const style = await FileSystem.getRaw(`theme/style-${hash}`, DefaultStyle);
 
 			Object.keys(style).forEach(k => {
-				console.log(`--${k}`, style[k]);
 				document.documentElement.style.setProperty(`--${k}`, style[k]);
 			});
 
@@ -60,8 +53,8 @@
 		},
 
 		methods: {
-			showOptions() {
-				this.option = true;
+			onContext() {
+				this.$emit('context');
 			}
 		}
 	};

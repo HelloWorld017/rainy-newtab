@@ -1,12 +1,5 @@
 const FileSystem = {
-	async addImage(image) {
-		const canvas = document.createElement('canvas');
-		canvas.width = image.naturalWidth;
-		canvas.height = image.naturalHeight;
-
-		const ctx = canvas.getContext('2d');
-		ctx.drawImage(image, 0, 0);
-
+	encodeImage(canvas) {
 		const dataUrl = canvas.toDataURL();
 		const byteString = atob(dataUrl.split(',')[1]);
 		const buffer = new ArrayBuffer(byteString.length);
@@ -16,18 +9,56 @@ const FileSystem = {
 			imageArray[i] = byteString.charCodeAt(i);
 		}
 
-		const digest = crypto.subtle.digest('sha-1', imageArray);
+		return {
+			imageArray,
+			digest: crypto.subtle.digest('sha-1', imageArray)
+		};
+	},
+
+	async addImage(image) {
+		if(image.naturalWidth < 300 || image.naturalHeight < 200) throw new Error("Image is too small!");
+
+		const canvas = document.createElement('canvas');
+		canvas.width = image.naturalWidth;
+		canvas.height = image.naturalHeight;
+
+		const ctx = canvas.getContext('2d');
+		ctx.drawImage(image, 0, 0);
+
+		const {digest, imageArray} = this.encodeImage(canvas);
+
+		const thumbCanvas = document.createElement('canvas');
+		thumbCanvas.width = 300;
+		thumbCanvas.height = 200;
+
+		const thumbCtx = thumbCanvas.getContext('2d');
+
+		const resizeRate = Math.max(300 / image.naturalWidth, 200 / image.naturalHeight);
+		const resizeWidth = image.naturalWidth * resizeRate;
+		const resizeHeight = image.naturalHeight * resizeRate;
+
+		if(resizeWidth === 300) {
+			const y = (resizeHeight - 200) / 2
+			thumbCtx.drawImage(image, 0, -y, resizeWidth, resizeHeight);
+		} else {
+			const x = (resizeWidth - 300) / 2
+			thumbCtx.drawImage(image, -x, 0, resizeWidth, resizeHeight);
+		}
+
+		const {imageArray: thumbImageArray} = this.encodeImage(thumbCanvas);
+
 		const keys = await this.keyImages();
 		if(!keys.includes(digest)) {
 			keys.push(digest);
 		}
 
 		await this.setRaw(`theme/image-${digest}`, imageArray);
+		await this.setRaw(`theme/thumb-${digest}`, thumbImageArray);
 		await this.keyImages(keys);
 	},
 
-	async getImage(hash) {
-		const imageArray = await this.getRaw(`theme/image-${hash}`);
+	async getImage(hash, thumbnail = false) {
+		const imageArray = await this.getRaw(`theme/${thumbnail ? 'thumb' : 'image'}-${hash}`);
 		if(!imageArray) return null;
 
 		return new Blob(imageArray, {type: 'image/png'});
@@ -35,6 +66,14 @@ const FileSystem = {
 
 	async deleteImage(hash) {
 		await this.deleteRaw(`theme/image-${hash}`);
+		await this.deleteRaw(`theme/thumb-${hash}`);
+
+		try {
+			await this.deleteRaw(`theme/style-${hash}`);
+		} catch(e) {}
+
+		const keys = await this.keyImages();
+		await this.keyImages(keys.filter(v => v !== hash));
 	},
 
 	async keyImages(newValue) {

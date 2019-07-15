@@ -36,8 +36,8 @@
 </style>
 
 <script>
-	import ClockUnit from "./ClockUnit.vue";
-	import ClockDivider from "./ClockDivider.vue";
+	import ClockUnit from "../components/ClockUnit.vue";
+	import ClockDivider from "../components/ClockDivider.vue";
 
 	export default {
 		data() {

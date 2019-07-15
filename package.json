@@ -4,7 +4,8 @@
   "description": "A neat new tab extension for chrome",
   "main": "manifest.json",
   "scripts": {
-    "dev": "parcel app/index.html -d dist --public-url ./",
+    "dev": "parcel app/index.html -d dist",
+    "watch": "parcel watch app/index.html -d dist --public-url ./",
     "build": "parcel build app/index.html -d dist --public-url ./",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -38,6 +39,7 @@
     "@babel/runtime": "^7.5.4",
     "@mdi/font": "^3.7.95",
     "typeface-notosans-kor": "^1.0.2",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "vue-color": "^2.7.0"
   }
 }
