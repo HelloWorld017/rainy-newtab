@@ -74,15 +74,19 @@
 				document.documentElement.style.setProperty(`--${k}`, style[k]);
 			});
 
+			const start = Date.now();
 			const imageData = await FileSystem.getImage(hash);
 			// const imageUrl = await FileSystem.getImage(hash);
 
 			if(imageData) {
-				const imageUrl = URL.createObjectURL(FileSystem.dataUrlToBlob(imageData));
-				this.url = imageUrl;
+				//const imageUrl = URL.createObjectURL(FileSystem.dataUrlToBlob(imageData));
+				this.url = imageData;
 			} else {
 				this.url = 'https://picsum.photos/1920/1080';
 			}
+
+			const end = Date.now();
+			console.log(`Took ${end - start}ms too show!`);
 
 			this.readyToShow = true;
 		},

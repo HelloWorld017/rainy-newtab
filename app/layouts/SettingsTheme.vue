@@ -43,6 +43,10 @@
 		flex-direction: column;
 		align-items: stretch;
 
+		margin-top: 30px;
+		height: 100%;
+		overflow: auto;
+
 		&__item {
 			background: #eaebec;
 			display: flex;

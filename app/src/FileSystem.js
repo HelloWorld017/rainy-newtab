@@ -1,6 +1,6 @@
 const FileSystem = {
 	async encodeImage(canvas) {
-		const dataUrl = canvas.toDataURL();
+		const dataUrl = canvas.toDataURL('image/webp');
 
 		return {
 			dataUrl,
@@ -23,14 +23,14 @@ const FileSystem = {
 		let str = '';
 
 		for(let i = 0; i < bufView.length; i++) {
-			const v = buf[i];
+			const v = bufView[i];
 			str += hex[v >> 4] + hex[v & 15];
 		}
 
 		return str;
 	},
 
-	dataUrlToBlob(dataUrl) {
+	dataUrlToBuffer(dataUrl) {
 		const byteString = atob(dataUrl.split(',')[1]);
 		const buffer = new ArrayBuffer(byteString.length);
 		const imageArray = new Uint8Array(buffer);
@@ -39,39 +39,51 @@ const FileSystem = {
 			imageArray[i] = byteString.charCodeAt(i);
 		}
 
-		return new Blob([imageArray], {type: 'image/png'});
+		return imageArray;
+	},
+
+	dataUrlToBlob(dataUrl) {
+		return new Blob([this.dataUrlToBuffer(dataUrl)], {type: 'image/webp'});
+	},
+
+	resizeImage(image, targetWidth, targetHeight) {
+		const canvas = document.createElement('canvas');
+		canvas.width = targetWidth;
+		canvas.height = targetHeight;
+
+		const ctx = canvas.getContext('2d');
+
+		const resizeRate = Math.max(targetWidth / image.naturalWidth, targetHeight / image.naturalHeight);
+		const resizeWidth = image.naturalWidth * resizeRate;
+		const resizeHeight = image.naturalHeight * resizeRate;
+
+		const x = (resizeWidth - targetWidth) / 2;
+		const y = (resizeHeight - targetHeight) / 2;
+
+		ctx.drawImage(image, -x, -y, resizeWidth, resizeHeight);
+
+		return canvas;
 	},
 
 	async addImage(image) {
 		if(image.naturalWidth < 300 || image.naturalHeight < 200) throw new Error("Image is too small!");
 
-		const canvas = document.createElement('canvas');
-		canvas.width = image.naturalWidth;
-		canvas.height = image.naturalHeight;
-
-		const ctx = canvas.getContext('2d');
-		ctx.drawImage(image, 0, 0);
-
-		const {digest, dataUrl} = await this.encodeImage(canvas);
-
-		const thumbCanvas = document.createElement('canvas');
-		thumbCanvas.width = 300;
-		thumbCanvas.height = 200;
-
-		const thumbCtx = thumbCanvas.getContext('2d');
-
-		const resizeRate = Math.max(300 / image.naturalWidth, 200 / image.naturalHeight);
-		const resizeWidth = image.naturalWidth * resizeRate;
-		const resizeHeight = image.naturalHeight * resizeRate;
-
-		if(resizeWidth === 300) {
-			const y = (resizeHeight - 200) / 2
-			thumbCtx.drawImage(image, 0, -y, resizeWidth, resizeHeight);
-		} else {
-			const x = (resizeWidth - 300) / 2
-			thumbCtx.drawImage(image, -x, 0, resizeWidth, resizeHeight);
+		let resizeEnabled = true;
+		if(screen.availLeft !== 0 || screen.availTop !== 0) {
+			resizeEnabled = prompt(`Will you resize the image to ${screen.availWidth}x${screen.availHeight}?\n` +
+				'If you want to change target size, please drag chrome to another monitor.\n' +
+				'If you don\'t want to resize, please click cancel.\n' +
+				'Large image can slow down startup speed.');
 		}
 
+		const canvas = this.resizeImage(
+			image,
+			resizeEnabled ? screen.availWidth : image.naturalWidth,
+			resizeEnabled ? screen.availHeight : image.naturalHeight
+		);
+		const {digest, dataUrl} = await this.encodeImage(canvas);
+
+		const thumbCanvas = this.resizeImage(image, 300, 200);
 		const {dataUrl: thumbDataUrl} = await this.encodeImage(thumbCanvas);
 
 		const keys = await this.keyImages();

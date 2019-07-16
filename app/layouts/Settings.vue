@@ -31,6 +31,7 @@
 			color: #202020;
 			font-size: 2rem;
 			text-decoration: none;
+			z-index: 2;
 		}
 	}
 </style>
