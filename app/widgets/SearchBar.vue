@@ -1,5 +1,5 @@
 <template>
-	<form class="SearchBar" @submit.prevent="submit">
+	<form class="SearchBar" @submit.prevent="submit" v-if="enabled">
 		<input class="SearchBar__text"
 			type="text" v-model="query"
 			autocomplete="off" autocorrect="off"
@@ -56,14 +56,26 @@
 </style>
 
 <script>
+	import FileSystem from "../src/FileSystem";
+
 	export default {
 		data() {
 			return {query: ''};
 		},
 
+		asyncComputed: {
+			async enabled() {
+				return await FileSystem.getRaw('config/search.enabled', 'true') === 'true';
+			},
+
+			async url() {
+				return await FileSystem.getRaw('config/search.url', 'https://google.com/search?q=%1');
+			}
+		},
+
 		methods: {
 			submit() {
-				location.href = `https://google.com/search?q=${encodeURIComponent(this.query)}`;
+				location.href = this.url.replace(/%1/g, encodeURIComponent(this.query));
 			}
 		}
 	};

@@ -170,6 +170,20 @@ const FileSystem = {
 		});
 	},
 
+	bindFs(entries) {
+		const computed = {};
+		const methods = {};
+
+		Object.entries(entries).forEach(([name, [key, defaultValue]]) => {
+			if(defaultValue === undefined) defaultValue = null;
+
+			computed[name] = () => FileSystem.getRaw(key, defaultValue);
+			methods[`set${name[0].toUpperCase() + name.slice(1)}`] = value => FileSystem.setRaw(key, value);
+		});
+
+		return {computed, methods};
+	},
+
 	get isExtension() {
 		return !!chrome.storage;
 	}

@@ -1,7 +1,7 @@
 <template>
-	<div class="Weather">
-		<div class="Weather__weather">
-			<!-- <i class="Weather__icon" :class="icon"></i> -->
+	<div class="Weather" v-if="enabled">
+		<div class="Weather__weather" v-if="icon">
+			<i class="Weather__icon mdi" :class="`mdi-${icon}`"></i>
 			{{weather}}
 		</div>
 
@@ -41,27 +41,40 @@
 
 <script>
 	import FileSystem from "../src/FileSystem";
+	import getWeatherIcon from "../src/WeatherIcon";
 
 	export default {
 		data() {
 			return {
 				weather: 'Loading...',
-				icon: 'loading',
+				icon: '',
 				temp: '?',
 				humidity: '?'
 			};
 		},
 
+		asyncComputed: {
+			async enabled() {
+				return await FileSystem.getRaw('config/weather.enabled', 'true') === 'true';
+			},
+
+			async icon() {
+				return await FileSystem.getRaw('config/weather.icon', 'true') === 'true';
+			}
+		},
+
 		methods: {
 			async update() {
-				const locationCode = await FileSystem.getRaw('weather', 'KSXX0027');
+				const locationCode = await FileSystem.getRaw('config/weather.location', 'KSXX0027');
 				const weatherRaw = await new Promise(resolve => {
 					chrome.runtime.sendMessage({method: 'weather', locationCode}, resolve);
 				});
 				const weather = (new DOMParser()).parseFromString(weatherRaw, 'text/xml');
 
 				this.weather = weather.querySelector('cc > t').textContent;
-				this.icon = weather.querySelector('cc > icon').textContent;
+				this.icon = getWeatherIcon(
+					parseInt(weather.querySelector('cc > icon').textContent)
+				);
 				this.temp = weather.querySelector('cc > tmp').textContent;
 				this.humidity = weather.querySelector('cc > hmid').textContent;
 			}

@@ -3,6 +3,9 @@
 		<clock></clock>
 
 		<div class="Bottom">
+			<span class="Bottom__first" v-if="settingsNotOpened">
+				Right click to open settings...
+			</span>
 			<weather></weather>
 			<search-bar></search-bar>
 		</div>
@@ -36,6 +39,12 @@
 		position: fixed;
 		bottom: 50px;
 		right: 50px;
+
+		&__first {
+			color: #f1f2f3;
+			font-size: 1rem;
+			font-family: 'Noto Sans KR', sans-serif;
+		}
 	}
 
 	.Backdrop {
@@ -81,7 +90,8 @@
 	export default {
 		data() {
 			return {
-				options: false
+				options: false,
+				settingsNotOpened: false
 			};
 		},
 
@@ -94,13 +104,22 @@
 		},
 
 		methods: {
-			showOptions() {
+			async showOptions() {
+				if(this.settingsNotOpened) {
+					await FileSystem.setRaw('config/initial', 'true');
+					this.settingsNotOpened = false;
+				}
+
 				this.options = true;
 			},
 
 			hideOptions() {
 				this.options = false;
 			}
+		},
+
+		async mounted() {
+			this.settingsNotOpened = await FileSystem.getRaw('config/initial') !== 'true';
 		}
 	};
 </script>
