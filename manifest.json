@@ -5,19 +5,19 @@
 	"description": "A neat new tab extension for chrome",
 
 	"icons": {
-		"16": "app/images/icons/icon16.png",
-		"48": "app/images/icons/icon48.png",
-		"128": "app/images/icons/icon128.png"
+		"16": "assets/icon16.png",
+		"48": "assets/icon48.png",
+		"128": "assets/icon128.png"
 	},
 
 	"background": {
-		"scripts": ["app/index.js"],
+		"scripts": ["index.js"],
 		"persistent": false
 	},
 
 	"browser_action": {
 		"default_title": "New Tab",
-		"default_icon": "app/images/icons/icon128.png"
+		"default_icon": "assets/icon128.png"
 	},
 
 	"chrome_url_overrides" : {
