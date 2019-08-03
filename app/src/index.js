@@ -1,4 +1,6 @@
 import "typeface-notosans-kor";
+import "typeface-roboto";
+import "typeface-titillium-web";
 import "@mdi/font/css/materialdesignicons.css";
 
 import FileSystem from "./FileSystem";
@@ -15,5 +17,3 @@ new Vue({
 		return h(NewTab);
 	}
 });
-
-window.fs = FileSystem;
