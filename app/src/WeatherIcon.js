@@ -16,7 +16,7 @@ const WeatherIconFull = {
 	201: 'weather-lightning-rainy',		// thunderstorm with rain
 	202: 'weather-lightning-rainy',		// thunderstorm with rain
 	210: 'weather-partly-lightning',	// light thunderstorm
-	211: 'weather-ligtning',			// thunderstorm
+	211: 'weather-lightning',			// thunderstorm
 	212: 'weather-lightning',			// heavy thunderstorm
 	221: 'weather-lightning',			// ragged thunderstorm
 	230: 'weather-lightning',			// thunderstorm with light drizzle
@@ -68,7 +68,7 @@ const WeatherIconFull = {
 	751: 'weather-fog',					// sand
 	761: 'weather-fog',					// dust
 	762: 'weather-fog',					// volcanic ash
-	771: 'weather-windy',				// squalls
+	771: 'weather-windy-variant',		// squalls
 	781: 'weather-tornado',				// tornado
 	
 	// Group 800: Clear
