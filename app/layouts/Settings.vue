@@ -16,11 +16,19 @@
 			</checkbox>
 
 			<label class="Settings__text">
-				Location Code
+				Location
 
 				<input type="text" ref="weatherLocation"
 					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 					:value="weatherLocation" @change="setWeatherLocationNative">
+			</label>
+
+			<label class="Settings__text">
+				<a href="https://openweathermap.org/appid">OpenWeatherMap AppId</a>
+
+				<input type="text" ref="weatherAppId"
+					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+					:value="weatherAppId" @change="setWeatherAppIdNative">
 			</label>
 		</div>
 
@@ -120,7 +128,8 @@
 	const {computed, methods} = FileSystem.bindFs({
 		weatherEnabled: ['config/weather.enabled', 'true'],
 		weatherIcon: ['config/weather.icon', 'true'],
-		weatherLocation: ['config/weather.location', 'KSXX0027'],
+		weatherLocation: ['config/weather.location', 'Daejeon, KR'],
+		weatherAppId: ['config/weather.appid', ''],
 		searchEnabled: ['config/search.enabled', 'true'],
 		searchUrl: ['config/search.url', 'https://google.com/search?q=%1']
 	});
@@ -138,6 +147,10 @@
 			},
 
 			...methods,
+
+			setWeatherAppIdNative() {
+				this.setWeatherAppId(this.$refs.weatherAppId.value);
+			},
 
 			setWeatherLocationNative() {
 				this.setWeatherLocation(this.$refs.weatherLocation.value);

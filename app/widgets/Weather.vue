@@ -55,7 +55,8 @@
 
 		asyncComputed: {
 			async enabled() {
-				return await FileSystem.getRaw('config/weather.enabled', 'true') === 'true';
+				return (await FileSystem.getRaw('config/weather.enabled', 'true') === 'true') &&
+					(await FileSystem.getRaw('config/weather.appid', null));
 			},
 
 			async icon() {
@@ -65,18 +66,24 @@
 
 		methods: {
 			async update() {
-				const locationCode = await FileSystem.getRaw('config/weather.location', 'KSXX0027');
+				const appId = await FileSystem.getRaw('config/weather.appid', '');
+				const locationCode = await FileSystem.getRaw('config/weather.location', 'Daejeon, KR');
+				
 				const weatherRaw = await new Promise(resolve => {
-					chrome.runtime.sendMessage({method: 'weather', locationCode}, resolve);
+					chrome.runtime.sendMessage({method: 'weather', locationCode, appId}, resolve);
 				});
-				const weather = (new DOMParser()).parseFromString(weatherRaw, 'text/xml');
+				const weatherParsed = JSON.parse(weatherRaw);
+				if(!(weatherParsed && weatherParsed.weather && weatherParsed.weather.length)) return;
 
-				this.weather = weather.querySelector('cc > t').textContent;
+				const weather = weatherParsed.weather[0];
+				this.weather = weather.main;
+				
 				this.icon = getWeatherIcon(
-					parseInt(weather.querySelector('cc > icon').textContent)
+					parseInt(weather.icon),
+					weather.code
 				);
-				this.temp = weather.querySelector('cc > tmp').textContent;
-				this.humidity = weather.querySelector('cc > hmid').textContent;
+				this.temp = Math.round(weatherParsed.main.temp - 273.15);
+				this.humidity = weatherParsed.main.humidity;
 			}
 		},
 

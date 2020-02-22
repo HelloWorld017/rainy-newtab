@@ -1,8 +1,11 @@
-const WEATHER_SERVER = "https://wxdata.weather.com/wxdata/weather/local/#LocationCode#?cc=*&unit=m&dayf=1";
+const WEATHER_SERVER = "https://api.openweathermap.org/data/2.5/weather?q=#Location#&appid=#AppId#";
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 	if (request.method === 'weather') {
-		fetch(WEATHER_SERVER.replace('#LocationCode#', request.locationCode))
+		fetch(WEATHER_SERVER
+			.replace('#Location#', request.locationCode)
+			.replace('#AppId#', request.appId)
+		)
 			.then(response => response.text())
 			.then(text => sendResponse(text))
 			.catch(error => sendResponse(''));
