@@ -35,7 +35,7 @@
 			justify-content: center;
 
 			border: none;
-			border-radius: 90px;
+			border-radius: 18px;
 			margin-left: 20px;
 			padding: 5px 15px;
 
@@ -49,6 +49,7 @@
 		}
 
 		&__icon {
+			display: inline-flex;
 			color: var(--search-text-color);
 			font-size: 18px;
 		}
