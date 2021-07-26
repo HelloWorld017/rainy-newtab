@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Rainy NewTab",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "A neat new tab extension for chrome",
 
 	"icons": {
