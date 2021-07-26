@@ -26,7 +26,6 @@
 
 	"permissions": [
 		"storage",
-		"unlimitedStorage",
-		"https://wxdata.weather.com/"
+		"unlimitedStorage"
 	]
 }
