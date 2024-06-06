@@ -40,7 +40,7 @@
 			transition: all .6s ease;
 		}
 
-		&-enter, &-leave-to {
+		&-enter-from, &-leave-to {
 			opacity: 0;
 		}
 	}

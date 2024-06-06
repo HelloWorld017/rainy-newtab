@@ -1,9 +1,7 @@
 <template>
 	<div class="ClockNumber">
 		<transition name="Slide" mode="out-in">
-			<div v-for="i in numTexts" v-if="i === number" :key="i">
-				{{i}}
-			</div>
+			<div :key="number">{{number}}</div>
 		</transition>
 	</div>
 </template>
@@ -24,7 +22,7 @@
 			transition: all .4s ease;
 		}
 
-		&-enter {
+		&-enter-from {
 			opacity: 0;
 			transform: translateX(-6vw);
 		}

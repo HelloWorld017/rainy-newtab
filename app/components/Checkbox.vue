@@ -41,23 +41,18 @@
 
 <script>
 	export default {
-		model: {
-			prop: 'value',
-			event: 'change'
-		},
-
 		props: {
-			value: String
+			modelValue: String
 		},
 
 		computed: {
 			_value: {
 				get() {
-					return this.value === 'true';
+					return this.modelValue === 'true';
 				},
 
 				set(value) {
-					this.$emit('change', value.toString());
+					this.$emit('update:modelValue', value.toString());
 				}
 			}
 		}

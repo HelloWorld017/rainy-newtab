@@ -61,7 +61,7 @@
 			transition: all .4s ease;
 		}
 
-		&-enter, &-leave-to {
+		&-enter-from, &-leave-to {
 			opacity: 0;
 			transform: translateY(100px);
 		}
@@ -72,7 +72,7 @@
 			transition: all .4s ease;
 		}
 
-		&-enter, &-leave-to {
+		&-enter-from, &-leave-to {
 			opacity: 0;
 		}
 	}
