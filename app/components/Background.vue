@@ -76,10 +76,8 @@
 
 			const start = Date.now();
 			const imageData = await FileSystem.getImage(hash);
-			// const imageUrl = await FileSystem.getImage(hash);
 
 			if(imageData) {
-				//const imageUrl = URL.createObjectURL(FileSystem.dataUrlToBlob(imageData));
 				this.url = imageData;
 			} else {
 				this.url = 'https://picsum.photos/1920/1080';

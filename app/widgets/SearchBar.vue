@@ -22,7 +22,7 @@
 			padding: 10px 20px;
 
 			background: var(--search-color);
-			font-family: 'Noto Sans KR', sans-serif;
+			font-family: var(--ui-font);
 			font-size: 16px;
 			font-weight: 300;
 			color: var(--search-text-color);

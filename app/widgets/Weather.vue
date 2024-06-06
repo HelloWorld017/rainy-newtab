@@ -26,13 +26,13 @@
 		text-align: right;
 
 		&__weather {
-			font-family: 'Noto Sans KR', sans-serif;
+			font-family: var(--ui-font);
 			font-size: 3rem;
 			font-weight: 600;
 		}
 
 		&__condition {
-			font-family: 'Titillium Web', sans-serif;
+			font-family: var(--ui-font);
 			font-size: 1.2rem;
 			font-weight: 500;
 		}

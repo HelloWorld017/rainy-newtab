@@ -31,7 +31,7 @@
 		}
 
 		&__unit {
-			font-family: 'Noto Sans KR', sans-serif;
+			font-family: var(--ui-font);
 			font-weight: 400;
 			font-size: 1vw;
 		}

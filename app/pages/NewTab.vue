@@ -21,6 +21,10 @@
 </template>
 
 <style lang="less">
+	:root {
+		--ui-font: 'Geist Sans', sans-serif;
+	}
+
 	body, html {
 		padding: 0;
 		margin: 0;
@@ -43,7 +47,7 @@
 		&__first {
 			color: #f1f2f3;
 			font-size: 1rem;
-			font-family: 'Noto Sans KR', sans-serif;
+			font-family: var(--ui-font);
 		}
 	}
 

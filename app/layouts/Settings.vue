@@ -65,7 +65,7 @@
 		padding: 30px;
 		box-sizing: border-box;
 
-		font-family: 'Noto Sans KR', sans-serif;
+		font-family: var(--ui-font);
 
 		&__description {
 			font-size: 1rem;
@@ -94,7 +94,7 @@
 		}
 
 		&__text {
-			font-family: 'Noto Sans KR', sans-serif;
+			font-family: var(--ui-font);
 			font-size: .8rem;
 			display: flex;
 			flex-direction: column;
@@ -102,7 +102,7 @@
 			max-width: 400px;
 
 			input {
-				font-family: 'Noto Sans KR', sans-serif;
+				font-family: var(--ui-font);
 				font-size: 1.2rem;
 				padding: 5px 10px;
 				background: transparent;

@@ -11,7 +11,7 @@
 		cursor: pointer;
 		display: flex;
 		align-items: center;
-		font-family: 'Noto Sans KR', sans-serif;
+		font-family: var(--ui-font);
 		font-size: 1rem;
 
 		&__decorator {
@@ -20,7 +20,7 @@
 			height: 10px;
 			border: 2px solid #202020;
 			border-radius: 50%;
-			margin-right: 20px;
+			margin-right: 12px;
 
 			transition: all .4s ease;
 		}

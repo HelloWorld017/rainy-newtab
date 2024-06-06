@@ -20,7 +20,7 @@
 		display: flex;
 		color: var(--clock-color);
 		background: var(--clock-background);
-		font-family: 'Roboto', sans-serif;
+		font-family: var(--ui-font);
 		font-weight: 100;
 	}
 

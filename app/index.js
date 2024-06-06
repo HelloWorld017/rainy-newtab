@@ -1,3 +1,4 @@
+import "@fontsource/geist-sans";
 import "@mdi/font/css/materialdesignicons.css";
 
 import { createApp } from "vue";
