@@ -1,16 +1,16 @@
 <template>
 	<section class="Clock">
-		<clock-unit unit-name="Date" :current="current.getDate()" animate></clock-unit>
-		<clock-divider divider="/"></clock-divider>
-		<clock-unit unit-name="Hours" :current="current.getHours()" animate></clock-unit>
-		<clock-divider></clock-divider>
-		<clock-unit unit-name="Minutes" :current="current.getMinutes()" animate></clock-unit>
-		<clock-divider></clock-divider>
-		<clock-unit unit-name="Seconds" :current="current.getSeconds()" animate></clock-unit>
+		<clock-unit class="Clock__date" unit-name="Date" :current="current.getDate()" animate></clock-unit>
+		<clock-divider class="Clock__divider" divider="/"></clock-divider>
+		<clock-unit class="Clock__hours" unit-name="Hours" :current="current.getHours()" animate></clock-unit>
+		<clock-divider class="Clock__divider"></clock-divider>
+		<clock-unit class="Clock__minutes" unit-name="Minutes" :current="current.getMinutes()" animate></clock-unit>
+		<clock-divider class="Clock__divider"></clock-divider>
+		<clock-unit class="Clock__seconds" unit-name="Seconds" :current="current.getSeconds()" animate></clock-unit>
 	</section>
 </template>
 
-<style scoped>
+<style lang="less" scoped>
 	.Clock {
 		position: absolute;
 		top: 50%;
@@ -21,12 +21,25 @@
 		color: var(--clock-color);
 		background: var(--clock-background);
 		font-family: var(--ui-font);
-		font-weight: 100;
+		font-size: 6vmax;
 	}
 
-	@media screen and (max-width: 768px) {
+	@media screen and (max-width: 60vmax), screen and (max-width: 768px) {
 		.Clock {
+			top: 30%;
 			flex-direction: column;
+			align-items: center;
+
+			&__divider {
+				display: none;
+			}
+
+			&__date, &__seconds {
+				display: none;
+			}
+
+			font-size: min(30vmin, 300px);
+			--clock-unit-display: none;
 		}
 
 		.ClockUnit {

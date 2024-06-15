@@ -25,7 +25,7 @@
 		--ui-font: 'Geist Sans', sans-serif;
 	}
 
-	body, html {
+	body, html, #app {
 		padding: 0;
 		margin: 0;
 

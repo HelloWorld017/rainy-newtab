@@ -1,40 +1,71 @@
 <template>
 	<div class="Weather" v-if="enabled">
-		<div class="Weather__weather" v-if="icon">
-			<i class="Weather__icon mdi" :class="`mdi-${icon}`"></i>
-			{{weather}}
-		</div>
+		<i class="Weather__icon mdi" :class="`mdi-${icon}`"></i>
+		<div class="Weather__container">
+			<div class="Weather__weather" v-if="iconEnabled && icon">
+				{{weather}}
+			</div>
 
-		<div class="Weather__condition">
-			<span class="Weather__temperature">
-				Temperature: {{temp}} &deg;C
-			</span>
-			,
-			<span class="Weather__humidity">
-				Humidity: {{humidity}}%
-			</span>
+			<div class="Weather__condition">
+				<span class="Weather__temperature">
+					{{temp}} &deg;C
+				</span>
+				<span class="Weather__humidity">
+					{{humidity}}%
+				</span>
+			</div>
 		</div>
 	</div>
 </template>
 
 <style lang="less" scoped>
 	.Weather {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 12px;
 		background: var(--weather-background);
+		border: 1px solid rgba(255, 255, 255, .15);
 		color: var(--weather-color);
 		margin-bottom: 30px;
 		padding: 20px;
+		backdrop-filter: blur(80px);
+		border-radius: 25px;
 		text-align: right;
+
+		&__icon {
+			color: white;
+			background: rgba(0, 0, 0, .25);
+			font-size: max(2rem, 2vmin);
+			flex: 0 0 auto;
+			display: inline-flex;
+			justify-content: center;
+			align-items: center;
+			width: 1em;
+			height: 1em;
+			padding: 10px;
+			border-radius: 10px;
+		}
+
+		&__container {
+			display: flex;
+			flex-direction: column;
+		}
 
 		&__weather {
 			font-family: var(--ui-font);
-			font-size: 3rem;
+			font-size: max(2rem, 3vmin);
 			font-weight: 600;
 		}
 
 		&__condition {
+			display: flex;
+			gap: 12px;
+			justify-content: flex-end;
 			font-family: var(--ui-font);
-			font-size: 1.2rem;
+			font-size: max(1.2rem, 1.5vmin);
 			font-weight: 500;
+			opacity: .5;
 		}
 	}
 </style>
@@ -55,11 +86,15 @@
 
 		asyncComputed: {
 			async enabled() {
+				if (!FileSystem.isExtension) {
+					return true;
+				}
+
 				return (await FileSystem.getRaw('config/weather.enabled', 'true') === 'true') &&
 					(await FileSystem.getRaw('config/weather.appid', null));
 			},
 
-			async icon() {
+			async iconEnabled() {
 				return await FileSystem.getRaw('config/weather.icon', 'true') === 'true';
 			}
 		},
@@ -70,6 +105,15 @@
 				const locationCode = await FileSystem.getRaw('config/weather.location', 'Daejeon, KR');
 				
 				const weatherRaw = await new Promise(resolve => {
+					if (!FileSystem.isExtension) {
+						return resolve(
+							JSON.stringify({
+								weather: [{ icon: 10, code: '300', main: 'Light drizzle' }],
+								main: { temp: 289, humidity: 25 }
+							})
+						);
+					}
+
 					chrome.runtime.sendMessage({method: 'weather', locationCode, appId}, resolve);
 				});
 				const weatherParsed = JSON.parse(weatherRaw);

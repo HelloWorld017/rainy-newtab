@@ -17,7 +17,7 @@
 		height: 100%;
 
 		&__content {
-			position: fixed;
+			position: absolute;
 			top: 0;
 			left: 0;
 

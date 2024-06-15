@@ -46,21 +46,13 @@ const FileSystem = {
 		return new Blob([this.dataUrlToBuffer(dataUrl)], {type: 'image/webp'});
 	},
 
-	resizeImage(image, targetWidth, targetHeight) {
+	drawImage(image, targetWidth, targetHeight) {
 		const canvas = document.createElement('canvas');
 		canvas.width = targetWidth;
 		canvas.height = targetHeight;
 
 		const ctx = canvas.getContext('2d');
-
-		const resizeRate = Math.max(targetWidth / image.naturalWidth, targetHeight / image.naturalHeight);
-		const resizeWidth = image.naturalWidth * resizeRate;
-		const resizeHeight = image.naturalHeight * resizeRate;
-
-		const x = (resizeWidth - targetWidth) / 2;
-		const y = (resizeHeight - targetHeight) / 2;
-
-		ctx.drawImage(image, -x, -y, resizeWidth, resizeHeight);
+		ctx.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight);
 
 		return canvas;
 	},
@@ -68,19 +60,12 @@ const FileSystem = {
 	async addImage(image) {
 		if(image.naturalWidth < 300 || image.naturalHeight < 200) throw new Error("Image is too small!");
 
-		let resizeEnabled = true;
-		if(screen.availLeft !== 0 || screen.availTop !== 0) {
-			resizeEnabled = prompt(`Will you resize the image to ${screen.availWidth}x${screen.availHeight}?\n` +
-				'If you want to change target size, please drag chrome to another monitor.\n' +
-				'If you don\'t want to resize, please click cancel.\n' +
-				'Large image can slow down startup speed.');
-		}
-
 		const canvas = this.resizeImage(
 			image,
-			resizeEnabled ? screen.availWidth : image.naturalWidth,
-			resizeEnabled ? screen.availHeight : image.naturalHeight
+			image.naturalWidth,
+			image.naturalHeight
 		);
+
 		const {digest, dataUrl} = await this.encodeImage(canvas);
 
 		const thumbCanvas = this.resizeImage(image, 300, 200);
@@ -185,7 +170,7 @@ const FileSystem = {
 	},
 
 	get isExtension() {
-		return !!chrome.storage;
+		return __EXTENSION__;
 	}
 };
 

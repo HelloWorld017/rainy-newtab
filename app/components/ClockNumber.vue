@@ -1,47 +1,33 @@
 <template>
-	<div class="ClockNumber">
-		<transition name="Slide" mode="out-in">
-			<div :key="number">{{number}}</div>
-		</transition>
-	</div>
+	<component :is="numTexts[+number]" />
 </template>
 
-<style lang="less" scoped>
-	.ClockNumber {
-		display: flex;
-		font-size: 6vw;
-		overflow: hidden;
-		padding-left: 3vw;
-		padding-right: 12vw;
-		margin-left: -3vw;
-		margin-right: -12vw;
-	}
+<script setup>
+	import Number0 from "../assets/svgs/Number0.svg?component";
+	import Number1 from "../assets/svgs/Number1.svg?component";
+	import Number2 from "../assets/svgs/Number2.svg?component";
+	import Number3 from "../assets/svgs/Number3.svg?component";
+	import Number4 from "../assets/svgs/Number4.svg?component";
+	import Number5 from "../assets/svgs/Number5.svg?component";
+	import Number6 from "../assets/svgs/Number6.svg?component";
+	import Number7 from "../assets/svgs/Number7.svg?component";
+	import Number8 from "../assets/svgs/Number8.svg?component";
+	import Number9 from "../assets/svgs/Number9.svg?component";
 
-	.Slide {
-		&-enter-active, &-leave-active {
-			transition: all .4s ease;
-		}
+	const numTexts = [
+		Number0,
+		Number1,
+		Number2,
+		Number3,
+		Number4,
+		Number5,
+		Number6,
+		Number7,
+		Number8,
+		Number9
+	];
 
-		&-enter-from {
-			opacity: 0;
-			transform: translateX(-6vw);
-		}
-
-		&-leave-to {
-			transform: skewX(40deg) translateY(6vw);
-			opacity: 0;
-		}
-	}
-</style>
-
-<script>
-	export default {
-		data() {
-			return {
-				numTexts: [...Array(10)].map((v, i) => `${i}`)
-			};
-		},
-
-		props: ['number']
-	};
+	const props = defineProps({
+		number: String
+	});
 </script>

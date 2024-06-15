@@ -8,8 +8,7 @@
 	.ClockDivider {
 		display: flex;
 		align-items: flex-start;
-		margin: 10px;
-		font-size: 6vw;
+		margin: 1vmax;
 	}
 </style>
 
