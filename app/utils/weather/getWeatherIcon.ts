@@ -81,7 +81,7 @@ const WeatherIconFull = {
 	804: 'weather-cloudy'				// overcast clouds: 85-100%
 }
 
-export default (icon, condition) => {
+export const getWeatherIcon = (icon: number, condition: number): string => {
 	if(WeatherIconFull.hasOwnProperty(condition))
 		return WeatherIconFull[condition];
 	
