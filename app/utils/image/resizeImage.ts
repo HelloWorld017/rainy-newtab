@@ -3,7 +3,10 @@ export const resizeImage = (image: HTMLImageElement, targetWidth: number, target
 	canvas.width = targetWidth;
 	canvas.height = targetHeight;
 
-	const resizeRate = Math.max(targetWidth / image.naturalWidth, targetHeight / image.naturalHeight);
+	const resizeRate = Math.max(
+		targetWidth / image.naturalWidth,
+		targetHeight / image.naturalHeight
+	);
 	const resizeWidth = image.naturalWidth * resizeRate;
 	const resizeHeight = image.naturalHeight * resizeRate;
 
@@ -15,4 +18,3 @@ export const resizeImage = (image: HTMLImageElement, targetWidth: number, target
 
 	return canvas;
 };
-

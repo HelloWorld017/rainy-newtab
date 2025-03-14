@@ -13,7 +13,7 @@ const bufferToHex = (buffer: ArrayBuffer) => {
 	const chars = '0123456789abcdef';
 	let output = '';
 
-	for(let i = 0; i < bufferView.length; i++) {
+	for (let i = 0; i < bufferView.length; i++) {
 		const v = bufferView[i];
 		output += chars[v >> 4] + chars[v & 15];
 	}
@@ -26,6 +26,6 @@ export const encodeImage = async (canvas: HTMLCanvasElement) => {
 
 	return {
 		dataUrl,
-		digest: bufferToHex(await crypto.subtle.digest('sha-1', stringToBuffer(dataUrl)))
+		digest: bufferToHex(await crypto.subtle.digest('sha-1', stringToBuffer(dataUrl))),
 	};
 };

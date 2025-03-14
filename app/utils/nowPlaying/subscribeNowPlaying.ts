@@ -8,7 +8,7 @@ type NowPlaying = {
 };
 
 type NowPlayingUpdate = {
-	type: 'wnp-info',
+	type: 'wnp-info';
 	player: NowPlaying;
 };
 
