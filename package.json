@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,10 +27,25 @@
   },
   "homepage": "https://github.com/HelloWorld017/rainy-newtab#readme",
   "devDependencies": {
+    "@eslint/js": "^9.22.0",
+    "@stylistic/eslint-plugin": "^4.2.0",
+    "@types/chrome": "^0.0.309",
+    "@types/confusing-browser-globals": "^1.0.3",
+    "@types/firefox-webext-browser": "^120.0.4",
+    "@types/node": "^22.13.10",
     "@vitejs/plugin-vue": "^5.0.5",
+    "@vue/typescript-plugin": "^2.2.8",
+    "confusing-browser-globals": "^1.0.11",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-import-resolver-typescript": "^3.8.7",
+    "eslint-plugin-import-x": "^4.6.1",
+    "eslint-plugin-prettier": "^5.2.3",
     "less": "^4.2.0",
+    "prettier": "^3.5.3",
+    "typescript-eslint": "^8.26.1",
     "vite": "^5.2.12",
-    "vite-svg-loader": "^5.1.0"
+    "vite-svg-loader": "^5.1.0",
+    "vue-eslint-parser": "^10.1.1"
   },
   "dependencies": {
     "@fontsource/geist-sans": "^5.0.3",

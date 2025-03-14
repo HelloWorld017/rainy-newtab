@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    // Strictness
+    "strict": true,
+    "exactOptionalPropertyTypes": true,
+
+    // Module / Resolution
+    "module": "preserve",
+    "moduleDetection": "force",
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
+    // Types
+    "target": "es2022",
+    "lib": ["es2022", "dom"],
+    "types": ["node", "firefox-webext-browser", "chrome"],
+    "typeRoots": [
+      "./node_modules",
+      "./node_modules/@types"
+    ],
+
+    // Others
+    "allowJs": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "incremental": true,
+    "composite": true,
+    "plugins": [
+      { "name": "@vue/typescript-plugin" }
+    ]
+  },
+
+  "include": [
+    "app/**/*.ts",
+    "app/**/*.vue",
+    "extension/**/*.ts",
+    "eslint.config.js",
+    "vite.config.ts"
+  ]
+}
