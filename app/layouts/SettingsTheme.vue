@@ -48,181 +48,181 @@
 </template>
 
 <style lang="less" scoped>
-.SettingsTheme {
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
-
-	margin-top: 30px;
-
-	&__item {
-		background: #eaebec;
+	.SettingsTheme {
 		display: flex;
-		align-items: center;
-		justify-content: center;
-		padding: 30px 10px;
+		flex-direction: column;
+		align-items: stretch;
 
-		&:not(:last-child) {
-			margin-bottom: 30px;
+		margin-top: 30px;
+
+		&__item {
+			background: #eaebec;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 30px 10px;
+
+			&:not(:last-child) {
+				margin-bottom: 30px;
+			}
+		}
+
+		&__picker {
+			position: fixed;
 		}
 	}
 
-	&__picker {
-		position: fixed;
-	}
-}
+	.ThemeItem {
+		position: relative;
 
-.ThemeItem {
-	position: relative;
+		&__colors {
+			margin-left: 20px;
+		}
 
-	&__colors {
-		margin-left: 20px;
-	}
-
-	&__delete {
-		cursor: pointer;
-		position: absolute;
-		top: 5px;
-		right: 5px;
-		font-size: 2rem;
-		color: #202020;
-	}
-}
-
-.Color {
-	display: flex;
-	align-items: center;
-
-	&:not(:last-child) {
-		margin-bottom: 5px;
+		&__delete {
+			cursor: pointer;
+			position: absolute;
+			top: 5px;
+			right: 5px;
+			font-size: 2rem;
+			color: #202020;
+		}
 	}
 
-	&__view {
-		cursor: pointer;
-		width: 20px;
-		height: 20px;
-		border-radius: 50%;
-		border: 1px solid #a1a2a3;
-	}
+	.Color {
+		display: flex;
+		align-items: center;
 
-	&__text {
-		margin-left: 5px;
+		&:not(:last-child) {
+			margin-bottom: 5px;
+		}
+
+		&__view {
+			cursor: pointer;
+			width: 20px;
+			height: 20px;
+			border-radius: 50%;
+			border: 1px solid #a1a2a3;
+		}
+
+		&__text {
+			margin-left: 5px;
+		}
 	}
-}
 </style>
 
 <script>
-import ClickOutside from 'v-click-outside';
-import { Chrome } from 'vue-color';
-import Dropzone from '../components/Dropzone.vue';
+	import ClickOutside from 'v-click-outside';
+	import { Chrome } from 'vue-color';
+	import Dropzone from '../components/Dropzone.vue';
 
-import DefaultStyle from '../src/DefaultStyle';
-import FileSystem from '../src/FileSystem';
+	import DefaultStyle from '../src/DefaultStyle';
+	import FileSystem from '../src/FileSystem';
 
-export default {
-	data() {
-		return {
-			themes: {},
-			picker: null,
-		};
-	},
-
-	computed: {
-		pickerStyle() {
+	export default {
+		data() {
 			return {
-				left: `${this.picker.x}px`,
-				top: `${this.picker.y}px`,
+				themes: {},
+				picker: null,
 			};
 		},
 
-		pickerColor: {
-			get() {
-				return this.themes[this.picker.targetHash].style[this.picker.targetStyle];
+		computed: {
+			pickerStyle() {
+				return {
+					left: `${this.picker.x}px`,
+					top: `${this.picker.y}px`,
+				};
 			},
 
-			set(val) {
-				this.themes[this.picker.targetHash].style[this.picker.targetStyle] = val;
+			pickerColor: {
+				get() {
+					return this.themes[this.picker.targetHash].style[this.picker.targetStyle];
+				},
+
+				set(val) {
+					this.themes[this.picker.targetHash].style[this.picker.targetStyle] = val;
+				},
 			},
 		},
-	},
 
-	methods: {
-		async addTheme(blob) {
-			const url = URL.createObjectURL(blob);
-			const image = new Image();
-			await new Promise((resolve, reject) => {
-				image.onload = () => resolve();
-				image.onerror = () => reject();
-				image.src = url;
-			});
+		methods: {
+			async addTheme(blob) {
+				const url = URL.createObjectURL(blob);
+				const image = new Image();
+				await new Promise((resolve, reject) => {
+					image.onload = () => resolve();
+					image.onerror = () => reject();
+					image.src = url;
+				});
 
-			await FileSystem.addImage(image);
-			URL.revokeObjectURL(image);
+				await FileSystem.addImage(image);
+				URL.revokeObjectURL(image);
 
+				await this.refresh();
+			},
+
+			async deleteTheme(hash) {
+				await FileSystem.deleteImage(hash);
+				await this.refresh();
+			},
+
+			async refresh() {
+				const themeKeys = await FileSystem.keyImages();
+				const themes = {};
+
+				for (let hash of themeKeys) {
+					const thumb = await FileSystem.getImage(hash, true);
+					const style = await FileSystem.getRaw(`theme/style-${hash}`, DefaultStyle);
+
+					themes[hash] = { hash, thumb, style };
+				}
+
+				this.themes = themes;
+			},
+
+			getReadableName(name) {
+				return (
+					name[0].toUpperCase() +
+					name.slice(1).replace(/-([a-z])/g, (_, p1) => ` ${p1.toUpperCase()}`)
+				);
+			},
+
+			async showPicker(hash, styleId, event) {
+				if (this.picker) {
+					await this.closePicker();
+				}
+
+				const rect = event.target.getBoundingClientRect();
+				this.picker = {
+					x: rect.x + 40,
+					y: rect.y + 40,
+					targetHash: hash,
+					targetStyle: styleId,
+				};
+			},
+
+			async closePicker() {
+				await FileSystem.setRaw(
+					`theme/style-${this.picker.targetHash}`,
+					this.themes[this.picker.targetHash].style
+				);
+
+				this.picker = null;
+			},
+		},
+
+		async mounted() {
 			await this.refresh();
 		},
 
-		async deleteTheme(hash) {
-			await FileSystem.deleteImage(hash);
-			await this.refresh();
+		directives: {
+			ClickOutside: ClickOutside.directive,
 		},
 
-		async refresh() {
-			const themeKeys = await FileSystem.keyImages();
-			const themes = {};
-
-			for (let hash of themeKeys) {
-				const thumb = await FileSystem.getImage(hash, true);
-				const style = await FileSystem.getRaw(`theme/style-${hash}`, DefaultStyle);
-
-				themes[hash] = { hash, thumb, style };
-			}
-
-			this.themes = themes;
+		components: {
+			ChromePicker: Chrome,
+			Dropzone,
 		},
-
-		getReadableName(name) {
-			return (
-				name[0].toUpperCase() +
-				name.slice(1).replace(/-([a-z])/g, (_, p1) => ` ${p1.toUpperCase()}`)
-			);
-		},
-
-		async showPicker(hash, styleId, event) {
-			if (this.picker) {
-				await this.closePicker();
-			}
-
-			const rect = event.target.getBoundingClientRect();
-			this.picker = {
-				x: rect.x + 40,
-				y: rect.y + 40,
-				targetHash: hash,
-				targetStyle: styleId,
-			};
-		},
-
-		async closePicker() {
-			await FileSystem.setRaw(
-				`theme/style-${this.picker.targetHash}`,
-				this.themes[this.picker.targetHash].style
-			);
-
-			this.picker = null;
-		},
-	},
-
-	async mounted() {
-		await this.refresh();
-	},
-
-	directives: {
-		ClickOutside: ClickOutside.directive,
-	},
-
-	components: {
-		ChromePicker: Chrome,
-		Dropzone,
-	},
-};
+	};
 </script>

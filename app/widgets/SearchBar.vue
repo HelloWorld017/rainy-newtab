@@ -17,76 +17,79 @@
 </template>
 
 <style lang="less" scoped>
-.SearchBar {
-	display: flex;
-
-	&__text {
-		border: none;
-		border-radius: 90px;
-		width: 250px;
-		padding: 10px 20px;
-
-		background: var(--search-color);
-		font-family: var(--ui-font);
-		font-size: 16px;
-		font-weight: 300;
-		color: var(--search-text-color);
-		outline: none;
-	}
-
-	&__button {
+	.SearchBar {
 		display: flex;
-		align-items: center;
-		justify-content: center;
 
-		border: none;
-		border-radius: 18px;
-		margin-left: 20px;
-		padding: 5px 15px;
+		&__text {
+			border: none;
+			border-radius: 90px;
+			width: 250px;
+			padding: 10px 20px;
 
-		background-image: linear-gradient(
-			to left,
-			rgba(255, 255, 255, 0.15),
-			rgba(255, 255, 255, 0.15)
-		);
-		background-color: var(--search-color);
-		outline: none;
+			background: var(--search-color);
+			font-family: var(--ui-font);
+			font-size: 16px;
+			font-weight: 300;
+			color: var(--search-text-color);
+			outline: none;
+		}
 
-		&:hover {
-			cursor: pointer;
+		&__button {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			border: none;
+			border-radius: 18px;
+			margin-left: 20px;
+			padding: 5px 15px;
+
+			background-image: linear-gradient(
+				to left,
+				rgba(255, 255, 255, 0.15),
+				rgba(255, 255, 255, 0.15)
+			);
+			background-color: var(--search-color);
+			outline: none;
+
+			&:hover {
+				cursor: pointer;
+			}
+		}
+
+		&__icon {
+			display: inline-flex;
+			color: var(--search-text-color);
+			font-size: 18px;
 		}
 	}
-
-	&__icon {
-		display: inline-flex;
-		color: var(--search-text-color);
-		font-size: 18px;
-	}
-}
 </style>
 
 <script>
-import FileSystem from '../src/FileSystem';
+	import FileSystem from '../src/FileSystem';
 
-export default {
-	data() {
-		return { query: '' };
-	},
-
-	asyncComputed: {
-		async enabled() {
-			return (await FileSystem.getRaw('config/search.enabled', 'true')) === 'true';
+	export default {
+		data() {
+			return { query: '' };
 		},
 
-		async url() {
-			return await FileSystem.getRaw('config/search.url', 'https://google.com/search?q=%1');
-		},
-	},
+		asyncComputed: {
+			async enabled() {
+				return (await FileSystem.getRaw('config/search.enabled', 'true')) === 'true';
+			},
 
-	methods: {
-		submit() {
-			location.href = this.url.replace(/%1/g, encodeURIComponent(this.query));
+			async url() {
+				return await FileSystem.getRaw(
+					'config/search.url',
+					'https://google.com/search?q=%1'
+				);
+			},
 		},
-	},
-};
+
+		methods: {
+			submit() {
+				location.href = this.url.replace(/%1/g, encodeURIComponent(this.query));
+			},
+		},
+	};
 </script>

@@ -68,116 +68,116 @@
 </template>
 
 <style lang="less" scoped>
-.Settings {
-	position: fixed;
-	top: 10vh;
-	left: 10vw;
+	.Settings {
+		position: fixed;
+		top: 10vh;
+		left: 10vw;
 
-	background: #f1f2f3;
-	width: 80vw;
-	height: 80vh;
-	overflow: auto;
-	padding: 30px;
-	box-sizing: border-box;
+		background: #f1f2f3;
+		width: 80vw;
+		height: 80vh;
+		overflow: auto;
+		padding: 30px;
+		box-sizing: border-box;
 
-	font-family: var(--ui-font);
-
-	&__description {
-		font-size: 1rem;
-	}
-
-	&__close {
-		position: absolute;
-		top: 30px;
-		right: 30px;
-
-		cursor: pointer;
-		color: #202020;
-		font-size: 2rem;
-		text-decoration: none;
-		z-index: 2;
-	}
-
-	&__tab {
-		margin-left: 10px;
-
-		h1 {
-			margin-left: -10px;
-			margin-top: 30px;
-			margin-bottom: 10px;
-		}
-	}
-
-	&__text {
 		font-family: var(--ui-font);
-		font-size: 0.8rem;
-		display: flex;
-		flex-direction: column;
-		margin-top: 20px;
-		max-width: 400px;
 
-		input {
+		&__description {
+			font-size: 1rem;
+		}
+
+		&__close {
+			position: absolute;
+			top: 30px;
+			right: 30px;
+
+			cursor: pointer;
+			color: #202020;
+			font-size: 2rem;
+			text-decoration: none;
+			z-index: 2;
+		}
+
+		&__tab {
+			margin-left: 10px;
+
+			h1 {
+				margin-left: -10px;
+				margin-top: 30px;
+				margin-bottom: 10px;
+			}
+		}
+
+		&__text {
 			font-family: var(--ui-font);
-			font-size: 1.2rem;
-			padding: 5px 10px;
-			background: transparent;
-			border: none;
-			border-bottom: 2px solid #202020;
-			outline: none;
+			font-size: 0.8rem;
+			display: flex;
+			flex-direction: column;
+			margin-top: 20px;
+			max-width: 400px;
 
-			&::selection {
-				background: #202020;
-				color: #f1f2f3;
+			input {
+				font-family: var(--ui-font);
+				font-size: 1.2rem;
+				padding: 5px 10px;
+				background: transparent;
+				border: none;
+				border-bottom: 2px solid #202020;
+				outline: none;
+
+				&::selection {
+					background: #202020;
+					color: #f1f2f3;
+				}
 			}
 		}
 	}
-}
 </style>
 
 <script>
-import Checkbox from '../components/Checkbox.vue';
-import SettingsTheme from '../layouts/SettingsTheme.vue';
-import FileSystem from '../src/FileSystem';
+	import Checkbox from '../components/Checkbox.vue';
+	import SettingsTheme from '../layouts/SettingsTheme.vue';
+	import FileSystem from '../src/FileSystem';
 
-const { computed, methods } = FileSystem.bindFs({
-	weatherEnabled: ['config/weather.enabled', 'true'],
-	weatherIcon: ['config/weather.icon', 'true'],
-	weatherLocation: ['config/weather.location', 'Daejeon, KR'],
-	weatherAppId: ['config/weather.appid', ''],
-	searchEnabled: ['config/search.enabled', 'true'],
-	searchUrl: ['config/search.url', 'https://google.com/search?q=%1'],
-});
+	const { computed, methods } = FileSystem.bindFs({
+		weatherEnabled: ['config/weather.enabled', 'true'],
+		weatherIcon: ['config/weather.icon', 'true'],
+		weatherLocation: ['config/weather.location', 'Daejeon, KR'],
+		weatherAppId: ['config/weather.appid', ''],
+		searchEnabled: ['config/search.enabled', 'true'],
+		searchUrl: ['config/search.url', 'https://google.com/search?q=%1'],
+	});
 
-export default {
-	data() {
-		return {};
-	},
-
-	asyncComputed: computed,
-
-	methods: {
-		close() {
-			this.$emit('close');
+	export default {
+		data() {
+			return {};
 		},
 
-		...methods,
+		asyncComputed: computed,
 
-		setWeatherAppIdNative() {
-			this.setWeatherAppId(this.$refs.weatherAppId.value);
+		methods: {
+			close() {
+				this.$emit('close');
+			},
+
+			...methods,
+
+			setWeatherAppIdNative() {
+				this.setWeatherAppId(this.$refs.weatherAppId.value);
+			},
+
+			setWeatherLocationNative() {
+				this.setWeatherLocation(this.$refs.weatherLocation.value);
+			},
+
+			setSearchUrlNative() {
+				this.setSearchUrl(this.$refs.searchUrl.value);
+			},
 		},
 
-		setWeatherLocationNative() {
-			this.setWeatherLocation(this.$refs.weatherLocation.value);
+		components: {
+			Checkbox,
+			SettingsTheme,
 		},
-
-		setSearchUrlNative() {
-			this.setSearchUrl(this.$refs.searchUrl.value);
-		},
-	},
-
-	components: {
-		Checkbox,
-		SettingsTheme,
-	},
-};
+	};
 </script>

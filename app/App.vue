@@ -22,90 +22,90 @@
 </template>
 
 <style lang="less">
-:root {
-	--ui-font: 'Geist Sans', sans-serif;
-}
+	:root {
+		--ui-font: 'Geist Sans', sans-serif;
+	}
 
-body,
-html,
-#app {
-	padding: 0;
-	margin: 0;
+	body,
+	html,
+	#app {
+		padding: 0;
+		margin: 0;
 
-	width: 100vw;
-	height: 100vh;
-}
+		width: 100vw;
+		height: 100vh;
+	}
 </style>
 
 <style lang="less" scoped>
-.Bottom {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-end;
+	.Bottom {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
 
-	position: fixed;
-	bottom: 50px;
-	right: 50px;
+		position: fixed;
+		bottom: 50px;
+		right: 50px;
 
-	&__first {
-		color: #f1f2f3;
-		font-size: 1rem;
-		font-family: var(--ui-font);
-	}
-}
-
-.Backdrop {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(0, 0, 0, 0.8);
-}
-
-.Dialog {
-	&-enter-active,
-	&-leave-active {
-		transition: all 0.4s ease;
+		&__first {
+			color: #f1f2f3;
+			font-size: 1rem;
+			font-family: var(--ui-font);
+		}
 	}
 
-	&-enter-from,
-	&-leave-to {
-		opacity: 0;
-		transform: translateY(100px);
-	}
-}
-
-.Fade {
-	&-enter-active,
-	&-leave-active {
-		transition: all 0.4s ease;
+	.Backdrop {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.8);
 	}
 
-	&-enter-from,
-	&-leave-to {
-		opacity: 0;
+	.Dialog {
+		&-enter-active,
+		&-leave-active {
+			transition: all 0.4s ease;
+		}
+
+		&-enter-from,
+		&-leave-to {
+			opacity: 0;
+			transform: translateY(100px);
+		}
 	}
-}
+
+	.Fade {
+		&-enter-active,
+		&-leave-active {
+			transition: all 0.4s ease;
+		}
+
+		&-enter-from,
+		&-leave-to {
+			opacity: 0;
+		}
+	}
 </style>
 
 <script setup>
-import { ref } from 'vue';
-import { useConfig } from '@/composables/useConfig';
+	import { ref } from 'vue';
+	import { useConfig } from '@/composables/useConfig';
 
-const config = useConfig();
-const isSettingVisible = ref(false);
-const showOptions = () => {
-	if (config.initial) {
-		config.initial = false;
-	}
+	const config = useConfig();
+	const isSettingVisible = ref(false);
+	const showOptions = () => {
+		if (config.initial) {
+			config.initial = false;
+		}
 
-	isSettingVisible.value = true;
-};
+		isSettingVisible.value = true;
+	};
 
-const hideOptions = () => {
-	isSettingVisible.value = false;
-};
+	const hideOptions = () => {
+		isSettingVisible.value = false;
+	};
 
-export { showOptions, hideOptions };
+	export { showOptions, hideOptions };
 </script>

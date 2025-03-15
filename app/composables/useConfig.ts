@@ -1,6 +1,6 @@
 import { customRef, onScopeDispose, reactive } from 'vue';
-import { config } from '@/utils/config/readConfig';
 import type { ConfigProxy } from '@/utils/config/readConfig';
+import { config } from '@/utils/config/readConfig';
 
 export const useConfig = () => {
 	const createConfigRefProxy = <T extends ConfigProxy<unknown>>(proxy: T) =>

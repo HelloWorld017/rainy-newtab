@@ -22,93 +22,93 @@
 </template>
 
 <style lang="less" scoped>
-.ClockUnit {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	margin: 1vmax;
-
-	&__numbers {
+	.ClockUnit {
 		display: flex;
-		justify-content: center;
-		width: 1.5em;
+		flex-direction: column;
+		align-items: center;
+		margin: 1vmax;
+
+		&__numbers {
+			display: flex;
+			justify-content: center;
+			width: 1.5em;
+		}
+
+		&__unit {
+			font-family: var(--ui-font);
+			font-weight: 400;
+			font-size: 1vmax;
+
+			display: var(--clock-unit-display, block);
+		}
 	}
 
-	&__unit {
-		font-family: var(--ui-font);
-		font-weight: 400;
-		font-size: 1vmax;
+	.Slide {
+		&-enter-active,
+		&-leave-active,
+		&-move {
+			transition: all 0.4s ease;
+		}
 
-		display: var(--clock-unit-display, block);
-	}
-}
+		&-leave-active {
+			position: absolute;
+		}
 
-.Slide {
-	&-enter-active,
-	&-leave-active,
-	&-move {
-		transition: all 0.4s ease;
-	}
+		&-enter-from {
+			opacity: 0;
+			transform: translateX(-6vw);
+		}
 
-	&-leave-active {
-		position: absolute;
+		&-leave-to {
+			transform: skewX(40deg) translateY(6vw);
+			opacity: 0;
+		}
 	}
-
-	&-enter-from {
-		opacity: 0;
-		transform: translateX(-6vw);
-	}
-
-	&-leave-to {
-		transform: skewX(40deg) translateY(6vw);
-		opacity: 0;
-	}
-}
 </style>
 
 <script>
-import ClockNumber from './ClockNumber.vue';
+	import ClockNumber from './ClockNumber.vue';
 
-export default {
-	props: {
-		unitName: {
-			type: String,
-			default: 'Seconds',
+	export default {
+		props: {
+			unitName: {
+				type: String,
+				default: 'Seconds',
+			},
+
+			current: {
+				type: Number,
+				default: Date.now(),
+			},
+
+			animate: {
+				type: Boolean,
+			},
+
+			counts: {
+				type: Number,
+				default: 2,
+			},
 		},
 
-		current: {
-			type: Number,
-			default: Date.now(),
+		methods: {
+			padn(n, i) {
+				return i.toString().padStart(n, '0');
+			},
 		},
 
-		animate: {
-			type: Boolean,
+		computed: {
+			left() {
+				return this.padn(this.counts, this.current);
+			},
+
+			numbers() {
+				return this.left.split('');
+			},
 		},
 
-		counts: {
-			type: Number,
-			default: 2,
+		components: {
+			ClockNumber,
 		},
-	},
-
-	methods: {
-		padn(n, i) {
-			return i.toString().padStart(n, '0');
-		},
-	},
-
-	computed: {
-		left() {
-			return this.padn(this.counts, this.current);
-		},
-
-		numbers() {
-			return this.left.split('');
-		},
-	},
-
-	components: {
-		ClockNumber,
-	},
-};
+	};
 </script>
