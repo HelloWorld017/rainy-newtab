@@ -50,9 +50,12 @@
   "dependencies": {
     "@fontsource/geist-sans": "^5.0.3",
     "@mdi/font": "^7.4.47",
+    "es-toolkit": "^1.33.0",
+    "node-vibrant": "^4.0.3",
     "v-click-outside": "^3.2.0",
     "vue": "^3.4.27",
     "vue-async-computed": "^4.0.1",
-    "vue-color": "^2.8.1"
+    "vue-color": "^2.8.1",
+    "zod": "^3.24.2"
   }
 }

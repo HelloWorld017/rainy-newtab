@@ -1,5 +1,6 @@
 <template>
-	<background @context="showOptions">
+	<h3>Hello</h3>
+	<!-- <background @context="showOptions">
 		<clock></clock>
 
 		<div class="Bottom">
@@ -17,7 +18,7 @@
 		<transition name="Dialog">
 			<settings v-if="options" @close="hideOptions"></settings>
 		</transition>
-	</background>
+	</background> -->
 </template>
 
 <style lang="less">
@@ -88,48 +89,23 @@ html,
 }
 </style>
 
-<script>
-import Background from '../components/Background.vue';
-import Settings from '../layouts/Settings.vue';
-import FileSystem from '../src/FileSystem';
+<script setup>
+import { ref } from 'vue';
+import { useConfig } from '@/composables/useConfig';
 
-import Clock from '../widgets/Clock.vue';
-import SearchBar from '../widgets/SearchBar.vue';
-import Weather from '../widgets/Weather.vue';
+const config = useConfig();
+const isSettingVisible = ref(false);
+const showOptions = () => {
+	if (config.initial) {
+		config.initial = false;
+	}
 
-export default {
-	data() {
-		return {
-			options: false,
-			settingsNotOpened: false,
-		};
-	},
-
-	components: {
-		Background,
-		Clock,
-		SearchBar,
-		Settings,
-		Weather,
-	},
-
-	methods: {
-		async showOptions() {
-			if (this.settingsNotOpened) {
-				await FileSystem.setRaw('config/initial', 'true');
-				this.settingsNotOpened = false;
-			}
-
-			this.options = true;
-		},
-
-		hideOptions() {
-			this.options = false;
-		},
-	},
-
-	async mounted() {
-		this.settingsNotOpened = (await FileSystem.getRaw('config/initial')) !== 'true';
-	},
+	isSettingVisible.value = true;
 };
+
+const hideOptions = () => {
+	isSettingVisible.value = false;
+};
+
+export { showOptions, hideOptions };
 </script>

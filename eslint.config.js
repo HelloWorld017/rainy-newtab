@@ -9,6 +9,8 @@ import prettier from 'eslint-plugin-prettier/recommended';
 import * as ts from 'typescript-eslint';
 import vueParser from 'vue-eslint-parser';
 
+const importIgnoreList = ['\\.worker'];
+
 const tsParserOptions = {
 	tsconfigRootDir: import.meta.dirname,
 	project: [resolve(import.meta.dirname, './tsconfig.json')],
@@ -62,7 +64,7 @@ export default ts.config(
 			'import-x/no-default-export': 'error',
 			'import-x/no-duplicates': 'error',
 			'import-x/no-named-as-default-member': 'off',
-			'import-x/no-unresolved': 'error',
+			'import-x/no-unresolved': ['error', { ignore: importIgnoreList }],
 			'import-x/order': [
 				'error',
 				{
@@ -97,6 +99,9 @@ export default ts.config(
 		},
 		plugins: {
 			'@stylistic': stylistic,
+		},
+		settings: {
+			'import-x/ignore': importIgnoreList,
 		},
 	},
 	{

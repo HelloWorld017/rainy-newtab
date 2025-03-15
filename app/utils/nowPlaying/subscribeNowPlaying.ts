@@ -1,32 +1,12 @@
-type NowPlaying = {
-	artist: string;
-	album: string;
-	cover: string;
-	duration: number;
-	position: number;
-	title: string;
-};
-
-type NowPlayingUpdate = {
-	type: 'wnp-info';
-	player: NowPlaying;
-};
-
-const isNowPlayingUpdate = (data: unknown): data is NowPlayingUpdate =>
-	!!data &&
-	typeof data === 'object' &&
-	'type' in data &&
-	data.type === 'wnp-info' &&
-	'player' in data &&
-	!!data.player;
+import { ZNowPlayingUpdate } from '@/schemas/NowPlaying';
+import type { NowPlaying } from '@/schemas/NowPlaying';
 
 export const subscribeNowPlaying = (onUpdate: (data: NowPlaying) => void) => {
 	const onMessage = ({ data }: { data: unknown }) => {
-		if (!isNowPlayingUpdate(data)) {
-			return;
+		const parsed = ZNowPlayingUpdate.safeParse(data);
+		if (parsed.success) {
+			onUpdate(parsed.data.player);
 		}
-
-		onUpdate(data.player);
 	};
 
 	window.addEventListener('message', onMessage);

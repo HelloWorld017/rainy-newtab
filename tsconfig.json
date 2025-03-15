@@ -11,13 +11,18 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./app/*"]
     },
 
     // Types
     "target": "es2022",
     "lib": ["es2022", "dom"],
-    "types": ["node", "firefox-webext-browser", "chrome"],
+    "types": [
+      "chrome",
+      "firefox-webext-browser",
+      "node",
+      "vite/client"
+    ],
     "typeRoots": [
       "./node_modules",
       "./node_modules/@types"
