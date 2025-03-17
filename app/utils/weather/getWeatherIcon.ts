@@ -1,94 +1,115 @@
+import {
+	CloudIcon,
+	CloudDrizzleIcon,
+	CloudFogIcon,
+	CloudHailIcon,
+	CloudLightningIcon,
+	CloudRainIcon,
+	CloudRainWindIcon,
+	CloudSnowIcon,
+	CloudSunIcon,
+	CloudSunRainIcon,
+	CloudyIcon,
+	DropletIcon,
+	DropletsIcon,
+	HazeIcon,
+	SnowflakeIcon,
+	SunIcon,
+	TornadoIcon,
+} from 'lucide-vue-next';
+
 const WeatherIcon = {
-	1: 'weather-sunny',
-	2: 'weather-partly-cloudy',
-	3: 'weather-cloudy',
-	4: 'weather-cloudy',
-	9: 'weather-pouring',
-	10: 'weather-rainy',
-	11: 'weather-lightning-rainy',
-	13: 'weather-snowy',
-	50: 'weather-fog',
+	1: SunIcon,
+	2: CloudSunIcon,
+	3: CloudIcon,
+	4: CloudyIcon,
+	9: CloudRainIcon,
+	10: CloudDrizzleIcon,
+	11: CloudLightningIcon,
+	13: CloudSnowIcon,
+	50: CloudFogIcon,
 };
 
 const WeatherIconFull = {
 	// Group 2xx: Thunderstorm
-	200: 'weather-lightning', // thunderstorm with light rain
-	201: 'weather-lightning-rainy', // thunderstorm with rain
-	202: 'weather-lightning-rainy', // thunderstorm with rain
-	210: 'weather-partly-lightning', // light thunderstorm
-	211: 'weather-lightning', // thunderstorm
-	212: 'weather-lightning', // heavy thunderstorm
-	221: 'weather-lightning', // ragged thunderstorm
-	230: 'weather-lightning', // thunderstorm with light drizzle
-	231: 'weather-lightning-rainy', // thunderstorm with drizzle
-	232: 'weather-lightning-rainy', // thunderstorm with heavy drizzle
+	200: CloudLightningIcon, // thunderstorm with light rain
+	201: CloudLightningIcon, // thunderstorm with rain
+	202: CloudLightningIcon, // thunderstorm with rain
+	210: CloudLightningIcon, // light thunderstorm
+	211: CloudLightningIcon, // thunderstorm
+	212: CloudLightningIcon, // heavy thunderstorm
+	221: CloudLightningIcon, // ragged thunderstorm
+	230: CloudLightningIcon, // thunderstorm with light drizzle
+	231: CloudLightningIcon, // thunderstorm with drizzle
+	232: CloudLightningIcon, // thunderstorm with heavy drizzle
 
 	// Group 3xx: Drizzle
-	300: 'weather-partly-rainy', // light intensity drizzle
-	301: 'weather-rainy', // drizzle
-	302: 'weather-rainy', // heavy intensity drizzle
-	310: 'weather-rainy', // light intensity drizzle rain
-	311: 'weather-rainy', // drizzle rain
-	312: 'weather-pouring', // heavy intensity drizzle rain
-	313: 'weather-pouring', // shower rain and drizzle
-	314: 'weather-pouring', // heavy shower rain and drizzle
-	321: 'weather-pouring', // shower drizzle
+	300: CloudSunRainIcon, // light intensity drizzle
+	301: DropletIcon, // drizzle
+	302: CloudDrizzleIcon, // heavy intensity drizzle
+	310: DropletsIcon, // light intensity drizzle rain
+	311: CloudDrizzleIcon, // drizzle rain
+	312: CloudDrizzleIcon, // heavy intensity drizzle rain
+	313: CloudRainIcon, // shower rain and drizzle
+	314: CloudRainIcon, // heavy shower rain and drizzle
+	321: CloudRainWindIcon, // shower drizzle
 
 	// Group 5xx: Rain
-	500: 'weather-partly-rainy', // light rain
-	501: 'weather-rainy', // moderate rain
-	502: 'weather-pouring', // heavy intensity rain
-	503: 'weather-pouring', // very heavy rain
-	504: 'weather-pouring', // extreme rain
-	511: 'weather-snowy-rainy', // freezing rain
-	520: 'weather-rainy', // light intensity shower rain
-	521: 'weather-pouring', // shower rain
-	522: 'weather-pouring', // heavy intensity shower rain
-	531: 'weather-pouring', // ragged shower rain
+	500: DropletsIcon, // light rain
+	501: CloudDrizzleIcon, // moderate rain
+	502: CloudRainIcon, // heavy intensity rain
+	503: CloudRainWindIcon, // very heavy rain
+	504: CloudRainWindIcon, // extreme rain
+	511: CloudHailIcon, // freezing rain
+	520: CloudDrizzleIcon, // light intensity shower rain
+	521: CloudRainIcon, // shower rain
+	522: CloudRainWindIcon, // heavy intensity shower rain
+	531: CloudRainWindIcon, // ragged shower rain
 
 	// Group 6xx: Snow
-	600: 'weather-partly-snowy', // light snow
-	601: 'weather-snowy', // snow
-	602: 'weather-snowy-heavy', // heavy snow
-	611: 'weather-snowy', // sleet
-	612: 'weather-snowy', // light shower sleet
-	613: 'weather-snowy-heavy', // shower sleet
-	615: 'weather-snowy-rainy', // light rain and snow
-	616: 'weather-snowy-rainy', // rain and snow
-	620: 'weather-snowy', // light shower snow
-	621: 'weather-snowy-heavy', // shower snow
-	622: 'weather-snowy-heavy', // heavy shower snow
+	600: SnowflakeIcon, // light snow
+	601: SnowflakeIcon, // snow
+	602: CloudSnowIcon, // heavy snow
+	611: CloudSnowIcon, // sleet
+	612: CloudSnowIcon, // light shower sleet
+	613: CloudHailIcon, // shower sleet
+	615: CloudHailIcon, // light rain and snow
+	616: CloudHailIcon, // rain and snow
+	620: CloudHailIcon, // light shower snow
+	621: CloudHailIcon, // shower snow
+	622: CloudHailIcon, // heavy shower snow
 
 	// Group 7xx: Atmosphere
-	701: 'weather-hazy', // mist
-	711: 'weather-hazy', // smoke
-	721: 'weather-hazy', // haze
-	731: 'weather-fog', // sand / dust whirls
-	741: 'weather-fog', // fog
-	751: 'weather-fog', // sand
-	761: 'weather-fog', // dust
-	762: 'weather-fog', // volcanic ash
-	771: 'weather-windy-variant', // squalls
-	781: 'weather-tornado', // tornado
+	701: HazeIcon, // mist
+	711: HazeIcon, // smoke
+	721: HazeIcon, // haze
+	731: CloudFogIcon, // sand / dust whirls
+	741: CloudFogIcon, // fog
+	751: CloudFogIcon, // sand
+	761: CloudFogIcon, // dust
+	762: CloudFogIcon, // volcanic ash
+	771: CloudRainWindIcon, // squalls
+	781: TornadoIcon, // tornado
 
 	// Group 800: Clear
-	800: 'weather-sunny', // clear sky
+	800: SunIcon, // clear sky
 
 	// Group 80x: Clouds
-	801: 'weather-partly-cloudy', // few clouds: 11-25%
-	802: 'weather-partly-cloudy', // scattered clouds: 25-50%
-	803: 'weather-cloudy', // broken clouds: 51-84%
-	804: 'weather-cloudy', // overcast clouds: 85-100%
+	801: SunIcon, // few clouds: 11-25%
+	802: CloudSunIcon, // scattered clouds: 25-50%
+	803: CloudIcon, // broken clouds: 51-84%
+	804: CloudyIcon, // overcast clouds: 85-100%
 };
 
-export const getWeatherIcon = (icon: number, condition: number): string => {
-	if (WeatherIconFull.hasOwnProperty(condition)) {
-		return WeatherIconFull[condition];
+export const getWeatherIcon = (weatherIcon?: string, weatherId?: number) => {
+	if (weatherId && Object.hasOwn(WeatherIconFull, weatherId)) {
+		return WeatherIconFull[weatherId as keyof typeof WeatherIconFull];
 	}
 
-	if (WeatherIcon.hasOwnProperty(icon)) {
-		return WeatherIcon[icon];
+	const weatherIconNumber = weatherIcon && parseInt(weatherIcon);
+	if (weatherIconNumber && Object.hasOwn(WeatherIcon, weatherIconNumber)) {
+		return WeatherIcon[weatherIconNumber as keyof typeof WeatherIcon];
 	}
 
-	return '';
+	return null;
 };

@@ -1,9 +1,9 @@
-import { customRef, onScopeDispose, reactive } from 'vue';
-import type { ConfigProxy } from '@/utils/config/readConfig';
-import { config } from '@/utils/config/readConfig';
+import { customRef, getCurrentScope, onScopeDispose, reactive } from 'vue';
+import { config } from '@/utils/config';
+import type { ConfigProxy } from '@/utils/config';
 
 export const useConfig = () => {
-	const createConfigRefProxy = <T extends ConfigProxy<unknown>>(proxy: T) =>
+	const createConfigRefProxy = <T extends ConfigProxy<object>>(proxy: T) =>
 		new Proxy(proxy, {
 			get(target, key, receiver) {
 				if (!Object.hasOwn(target, key)) {
@@ -12,8 +12,12 @@ export const useConfig = () => {
 
 				return customRef((track, trigger) => ({
 					get() {
-						const dispose = proxy.$subscribe(key as never, trigger);
-						onScopeDispose(dispose);
+						const scope = getCurrentScope();
+						if (scope) {
+							const dispose = proxy.$subscribe(key as never, trigger);
+							onScopeDispose(dispose);
+						}
+
 						track();
 
 						const value = target[key as keyof T];

@@ -1,10 +1,13 @@
 <template>
-	<main class="Background">
-		<transition name="Fade">
-			<div class="Background__image" :style="{ backgroundImage }" v-if="readyToShow"></div>
-		</transition>
-
-		<div class="Background__content" @contextmenu.prevent="onContext">
+	<main class="Background" :style="style">
+		<img
+			v-if="isReadyToShow"
+			class="Background__image"
+			:class="{ 'Background__image--loaded': isLoaded }"
+			:src="url"
+			@load="onLoad"
+		/>
+		<div class="Background__content" @contextmenu.prevent="onContextMenu">
 			<slot></slot>
 		</div>
 	</main>
@@ -28,78 +31,50 @@
 			width: 100%;
 			height: 100%;
 
-			background-size: cover;
-			background-position: center;
+			object-fit: cover;
+			object-position: center;
 			background-color: #303030;
-		}
-	}
 
-	.Fade {
-		&-enter-active,
-		&-leave-active {
-			transition: all 0.6s ease;
-		}
-
-		&-enter-from,
-		&-leave-to {
 			opacity: 0;
+			transition: all 0.6s ease;
+
+			&--loaded {
+				opacity: 1;
+			}
 		}
 	}
 </style>
 
-<script>
-	import DefaultStyle from '../src/DefaultStyle';
-	import FileSystem from '../src/FileSystem';
+<script lang="ts" setup>
+	import { ref, onBeforeMount } from 'vue';
+	import { DEFAULT_IMAGE_URL } from '@/constants/theme';
+	import { asKebabCase } from '@/utils/string';
+	import { getThemeKeys, getThemeImage, getThemeStyle } from '@/utils/theme';
 
-	export default {
-		data() {
-			return {
-				url: '',
-				readyToShow: false,
-			};
-		},
+	const style = ref<Record<string, string>>({});
+	const url = ref('');
+	const isReadyToShow = ref(false);
+	const isLoaded = ref(false);
 
-		computed: {
-			backgroundImage() {
-				return `url(${this.url})`;
-			},
-		},
+	onBeforeMount(async () => {
+		const keys = await getThemeKeys();
+		const themeKey = keys[Math.floor(Math.random() * keys.length)];
+		const [themeStyle, themeImage] = await Promise.all([
+			getThemeStyle(themeKey),
+			getThemeImage(themeKey),
+		]);
 
-		async created() {
-			const keys = await FileSystem.keyImages();
-			const hash = keys[Math.floor(Math.random() * keys.length)];
+		url.value = themeImage ?? DEFAULT_IMAGE_URL;
+		style.value = Object.fromEntries(
+			Object.entries(themeStyle).map(
+				([key, color]) => [`--theme-${asKebabCase(key)}`, color] as const
+			)
+		);
 
-			const style = await FileSystem.getRaw(`theme/style-${hash}`, DefaultStyle);
+		isReadyToShow.value = true;
+	});
 
-			Object.keys(style).forEach(k => {
-				document.documentElement.style.setProperty(`--${k}`, style[k]);
-			});
-
-			const start = Date.now();
-			const imageData = await FileSystem.getImage(hash);
-
-			if (imageData) {
-				this.url = imageData;
-			} else {
-				this.url = 'https://picsum.photos/1920/1080';
-			}
-
-			const end = Date.now();
-			console.log(`Took ${end - start}ms too show!`);
-
-			this.readyToShow = true;
-		},
-
-		destroyed() {
-			if (this.url && this.url.startsWith('blob://')) {
-				URL.revokeObjectURL(this.url);
-			}
-		},
-
-		methods: {
-			onContext() {
-				this.$emit('context');
-			},
-		},
-	};
+	const emit = defineEmits<{ contextmenu: [] }>();
+	const onLoad = () => (isLoaded.value = true);
+	const onContextMenu = () => emit('contextmenu');
 </script>

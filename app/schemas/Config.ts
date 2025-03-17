@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const ZConfig = z.object({
-	initial: z.boolean(),
+	initial: z.boolean().default(true),
 	weather: z
 		.object({
 			appId: z.string().nullable().default(null),

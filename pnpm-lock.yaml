@@ -17,6 +17,9 @@ importers:
       es-toolkit:
         specifier: ^1.33.0
         version: 1.33.0
+      lucide-vue-next:
+        specifier: ^0.482.0
+        version: 0.482.0(vue@3.4.27(typescript@5.8.2))
       node-vibrant:
         specifier: ^4.0.3
         version: 4.0.3
@@ -81,6 +84,9 @@ importers:
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
+      typescript:
+        specifier: ^5.8.2
+        version: 5.8.2
       typescript-eslint:
         specifier: ^8.26.1
         version: 8.26.1(eslint@9.22.0)(typescript@5.8.2)
@@ -1145,6 +1151,11 @@ packages:
 
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+
+  lucide-vue-next@0.482.0:
+    resolution: {integrity: sha512-XpxrCOAnPzuH1tlKUy3U6epKAmdMfs1iEeL6ziWulGVXzNKv6anorp0v6vCdhziqvCSQ2SsGLnbOXmZ/sjjl9g==}
+    peerDependencies:
+      vue: '>=3.0.1'
 
   magic-string@0.30.10:
     resolution: {integrity: sha512-iIRwTIf0QKV3UAnYK4PU8uiEc4SRh5jX0mwpIwETPpHdhVM4f53RSwS/vXvN1JhGX+Cs7B8qIq3d6AH49O5fAQ==}
@@ -2660,6 +2671,10 @@ snapshots:
   lodash.throttle@4.1.1: {}
 
   lodash@4.17.21: {}
+
+  lucide-vue-next@0.482.0(vue@3.4.27(typescript@5.8.2)):
+    dependencies:
+      vue: 3.4.27(typescript@5.8.2)
 
   magic-string@0.30.10:
     dependencies:

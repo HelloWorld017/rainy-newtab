@@ -1,29 +1,32 @@
 <template>
-	<h3>Hello</h3>
-	<!-- <background @context="showOptions">
-		<clock></clock>
+	<Background @contextmenu="showOptions">
+		<Clock />
+		<Date />
+		<Weather />
 
 		<div class="Bottom">
-			<span class="Bottom__first" v-if="settingsNotOpened">
+			<span class="Bottom__first" v-if="config.initial">
 				Right click to open settings...
 			</span>
-			<weather></weather>
-			<search-bar></search-bar>
+			<!-- <weather></weather>
+			<search-bar></search-bar> -->
 		</div>
 
-		<transition name="Fade">
-			<div class="Backdrop" v-if="options" @click="hideOptions"></div>
-		</transition>
+		<Transition name="Fade">
+			<div class="Backdrop" v-if="isSettingVisible" @click="hideOptions"></div>
+		</Transition>
 
-		<transition name="Dialog">
-			<settings v-if="options" @close="hideOptions"></settings>
-		</transition>
-	</background> -->
+		<!-- <Transition name="Dialog">
+			<settings v-if="isSettingVisible" @close="hideOptions"></settings>
+		</Transition> -->
+	</Background>
 </template>
 
 <style lang="less">
+	@import '@fontsource/geist-sans';
+
 	:root {
-		--ui-font: 'Geist Sans', sans-serif;
+		--ui-font: 'Geist Sans', 'Pretendard JP', sans-serif;
 	}
 
 	body,
@@ -34,6 +37,7 @@
 
 		width: 100vw;
 		height: 100vh;
+		font-size: 10px;
 	}
 </style>
 
@@ -89,8 +93,12 @@
 	}
 </style>
 
-<script setup>
+<script lang="ts" setup>
 	import { ref } from 'vue';
+	import Background from '@/components/Background.vue';
+	import Clock from '@/components/widgets/Clock/Clock.vue';
+	import Date from '@/components/widgets/Date/Date.vue';
+	import Weather from '@/components/widgets/Weather/Weather.vue';
 	import { useConfig } from '@/composables/useConfig';
 
 	const config = useConfig();
@@ -106,6 +114,4 @@
 	const hideOptions = () => {
 		isSettingVisible.value = false;
 	};
-
-	export { showOptions, hideOptions };
 </script>

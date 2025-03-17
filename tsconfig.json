@@ -19,7 +19,6 @@
     "lib": ["es2022", "dom"],
     "types": [
       "chrome",
-      "firefox-webext-browser",
       "node",
       "vite/client"
     ],
@@ -35,7 +34,7 @@
     "incremental": true,
     "composite": true,
     "plugins": [
-      { "name": "@vue/typescript-plugin" }
+      { "name": "@vue/typescript-plugin", "languages": ["vue"] }
     ]
   },
 

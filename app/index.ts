@@ -4,8 +4,8 @@ import '@mdi/font/css/materialdesignicons.css';
 import { createApp } from 'vue';
 
 import VueAsyncComputed from 'vue-async-computed';
-import NewTab from './pages/NewTab.vue';
+import App from './App.vue';
 
-const app = createApp(NewTab);
+const app = createApp(App);
 app.use(VueAsyncComputed);
 app.mount('#app');

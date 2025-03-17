@@ -22,7 +22,13 @@ const tsParserOptions = {
 
 export default ts.config(
 	{
-		files: ['app/**/*.ts', 'app/**/*.vue', 'eslint.config.js', 'vite.config.ts'],
+		files: [
+			'app/**/*.ts',
+			'app/**/*.vue',
+			'extension/**/*.ts',
+			'eslint.config.js',
+			'vite.config.ts',
+		],
 		extends: [
 			js.configs.recommended,
 			...ts.configs.recommendedTypeChecked,
@@ -118,6 +124,7 @@ export default ts.config(
 		files: ['app/definitions/*.ts', 'eslint.config.js', 'vite.config.ts'],
 		rules: {
 			'import-x/no-default-export': 'off',
+			'no-var': 'off',
 		},
 	}
 );
