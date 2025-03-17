@@ -14,11 +14,17 @@ export type ConfigProxy<T> = T extends object
 	: T;
 
 export type ConfigProxyMethods<T> = {
-	$subscribe: (key: keyof T | null, callback: () => void) => () => void;
+	$subscribe: <TKey extends keyof T | null>(
+		key: TKey,
+		callback: (
+			value: TKey extends null ? unknown : T[TKey & keyof T],
+			key: TKey extends null ? keyof T : TKey
+		) => void
+	) => () => void;
 };
 
 const createConfigProxy = <T>(object: T): ConfigProxy<T> => {
-	const subscriptions = new Map<keyof T | null, Set<() => void>>();
+	const subscriptions = new Map<keyof T | null, Set<(value: never, key: never) => void>>();
 	const proxyMaps = new Map<keyof T, unknown>();
 	const proxyMethods: ConfigProxyMethods<T> = {
 		$subscribe: (key, callback) => {
@@ -32,8 +38,8 @@ const createConfigProxy = <T>(object: T): ConfigProxy<T> => {
 	};
 
 	const onUpdate = (key: keyof T) => {
-		subscriptions.get(key)?.forEach(onUpdate => onUpdate());
-		subscriptions.get(null)?.forEach(onUpdate => onUpdate());
+		subscriptions.get(key)?.forEach(onUpdate => onUpdate(object[key] as never, key as never));
+		subscriptions.get(null)?.forEach(onUpdate => onUpdate(object[key] as never, key as never));
 	};
 
 	return new Proxy(object as ConfigProxy<T & object>, {
@@ -43,7 +49,7 @@ const createConfigProxy = <T>(object: T): ConfigProxy<T> => {
 			}
 
 			const value = Reflect.get(target, key, receiver);
-			if (typeof value !== 'object') {
+			if (!value || typeof value !== 'object') {
 				return value;
 			}
 

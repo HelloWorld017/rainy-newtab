@@ -35,12 +35,7 @@ export const addTheme = async (image: HTMLImageElement): Promise<void> => {
 
 	const themeStyle = getVibrantColor(image).then(palette =>
 		ZThemeStyle.parse({
-			vibrant: palette.Vibrant?.hex,
-			lightVibrant: palette.LightVibrant?.hex,
-			darkVibrant: palette.DarkVibrant?.hex,
-			muted: palette.Muted?.hex,
-			lightMuted: palette.LightMuted?.hex,
-			darkMuted: palette.DarkMuted?.hex,
+			'fill-primary': palette.Vibrant?.hex,
 		})
 	);
 

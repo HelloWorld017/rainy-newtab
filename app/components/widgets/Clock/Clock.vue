@@ -22,11 +22,11 @@
 
 <style lang="less" scoped>
 	.Clock {
-		font-size: 15vmin;
-		color: var(--theme-vibrant);
+		font-size: 8rem;
+		color: var(--theme-fill-primary);
 
 		&,
-		&__unit {
+		::v-deep(&__unit) {
 			display: flex;
 			align-items: center;
 			gap: 0.01em;
@@ -44,12 +44,12 @@
 </style>
 
 <script lang="ts" setup>
-	import { computed } from 'vue';
+	import ClockNumber from './ClockNumber.vue';
 	import DividerColon from '@/assets/svgs/DividerColon.svg?component';
 	import DividerSlash from '@/assets/svgs/DividerSlash.svg?component';
 	import SizeAnimated from '@/components/common/SizeAnimated.vue';
 	import { useInterval } from '@/composables/useInterval';
-	import ClockNumber from './ClockNumber.vue';
+	import { computed } from 'vue';
 
 	const asClockNumber = (number: number) => number.toString().padStart(2, '0').split('');
 	const current = useInterval(() => new Date(), 50);

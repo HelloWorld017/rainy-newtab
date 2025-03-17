@@ -1,20 +1,20 @@
 <template>
-	<main class="Background" :style="style">
+	<main class="ThemeSurface" :style="style">
 		<img
 			v-if="isReadyToShow"
-			class="Background__image"
-			:class="{ 'Background__image--loaded': isLoaded }"
+			class="ThemeSurface__image"
+			:class="{ 'ThemeSurface__image--loaded': isLoaded }"
 			:src="url"
 			@load="onLoad"
 		/>
-		<div class="Background__content" @contextmenu.prevent="onContextMenu">
+		<div class="ThemeSurface__content" @contextmenu.prevent="onContextMenu">
 			<slot></slot>
 		</div>
 	</main>
 </template>
 
 <style lang="less" scoped>
-	.Background {
+	.ThemeSurface {
 		width: 100%;
 		height: 100%;
 
@@ -48,7 +48,6 @@
 <script lang="ts" setup>
 	import { ref, onBeforeMount } from 'vue';
 	import { DEFAULT_IMAGE_URL } from '@/constants/theme';
-	import { asKebabCase } from '@/utils/string';
 	import { getThemeKeys, getThemeImage, getThemeStyle } from '@/utils/theme';
 
 	const style = ref<Record<string, string>>({});
@@ -66,9 +65,7 @@
 
 		url.value = themeImage ?? DEFAULT_IMAGE_URL;
 		style.value = Object.fromEntries(
-			Object.entries(themeStyle).map(
-				([key, color]) => [`--theme-${asKebabCase(key)}`, color] as const
-			)
+			Object.entries(themeStyle).map(([key, color]) => [`--theme-${key}`, color] as const)
 		);
 
 		isReadyToShow.value = true;

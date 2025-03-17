@@ -5,6 +5,13 @@ import { defineConfig } from 'vite';
 import svgLoader from 'vite-svg-loader';
 
 export default defineConfig({
+	build: {
+		target: ['chrome130', 'firefox130'],
+	},
+	esbuild: {
+		jsx: 'automatic',
+		jsxImportSource: 'vue',
+	},
 	plugins: [vue(), svgLoader()],
 	resolve: {
 		alias: [{ find: /^@\//, replacement: `${resolve(__dirname, './app')}/` }],

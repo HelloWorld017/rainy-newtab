@@ -1,12 +1,14 @@
 <template>
 	<div class="Weather" v-if="isEnabled && weather">
-		<i class="Weather__icon">
-			<component :is="weather?.icon" v-if="weather?.icon" />
-		</i>
-
+		<Component
+			v-if="weather?.icon"
+			:is="weather?.icon"
+			:strokeWidth="1.6"
+			class="Weather__icon"
+		/>
 		<div class="Weather__container">
-			<span class="Weather__weather">{{ weather?.name }}</span>
 			<span class="Weather__temperature">{{ weather?.temperature }} &deg;C</span>
+			<span class="Weather__weather" v-if="shouldShowWeatherName">{{ weather?.name }}</span>
 			<span class="Weather__humidity">{{ weather?.humidity }}%</span>
 		</div>
 	</div>
@@ -16,41 +18,40 @@
 	.Weather {
 		display: flex;
 		align-items: center;
-		gap: 12px;
+
+		font-size: 0.9rem;
+		font-weight: 400;
+		font-family: var(--ui-font);
+		color: var(--theme-fill-primary);
+		gap: 0.6rem;
 
 		&__icon {
-			color: white;
-			background: rgba(0, 0, 0, 0.25);
-			font-size: max(2rem, 2vmin);
 			flex: 0 0 auto;
-			display: inline-flex;
-			justify-content: center;
-			align-items: center;
+			font-size: 1.2rem;
 			width: 1em;
 			height: 1em;
-			padding: 10px;
-			border-radius: 10px;
 		}
 
 		&__container {
 			display: flex;
-			flex-direction: column;
-		}
+			text-transform: capitalize;
 
-		&__weather {
-			font-family: var(--ui-font);
-			font-size: max(2rem, 3vmin);
-			font-weight: 600;
-		}
+			& > * {
+				display: flex;
+				align-items: center;
 
-		&__condition {
-			display: flex;
-			gap: 12px;
-			justify-content: flex-end;
-			font-family: var(--ui-font);
-			font-size: max(1.2rem, 1.5vmin);
-			font-weight: 500;
-			opacity: 0.5;
+				&:not(:last-of-type)::after {
+					content: '';
+					display: block;
+					width: 0.12rem;
+					height: 0.12rem;
+					margin: 0 0.5rem;
+
+					background-color: var(--theme-fill-primary);
+					border-radius: 0.15rem;
+					opacity: 0.5;
+				}
+			}
 		}
 	}
 </style>
@@ -68,6 +69,7 @@
 	const isEnabled = computed(
 		() => !__EXTENSION__ || (config.weather.location && config.weather.appId)
 	);
+	const shouldShowWeatherName = computed(() => config.weather.showWeatherName);
 
 	const fetchWeather = async () => {
 		if (!isEnabled) {

@@ -28,6 +28,8 @@
     ],
 
     // Others
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
     "allowJs": true,
     "skipLibCheck": true,
     "noEmit": true,

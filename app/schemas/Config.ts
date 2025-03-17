@@ -6,6 +6,7 @@ export const ZConfig = z.object({
 		.object({
 			appId: z.string().nullable().default(null),
 			location: z.string().default('Seoul, KR'),
+			showWeatherName: z.boolean().nullable().default(false),
 		})
 		.default({}),
 });

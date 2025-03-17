@@ -18,6 +18,7 @@ const tsParserOptions = {
 	extraFileExtensions: ['.vue'],
 	/** @type {'latest'} */
 	ecmaVersion: 'latest',
+	ecmaFeatures: { jsx: true },
 };
 
 export default ts.config(
@@ -76,11 +77,7 @@ export default ts.config(
 				{
 					'groups': [
 						'builtin',
-						'external',
-						'internal',
-						'parent',
-						'index',
-						'sibling',
+						['external', 'internal', 'parent', 'index', 'sibling'],
 						'type',
 					],
 					'newlines-between': 'ignore',

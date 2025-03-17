@@ -1,15 +1,15 @@
 <template>
-	<Background @contextmenu="showOptions">
-		<Clock />
-		<Date />
-		<Weather />
+	<ThemeSurface @contextmenu="showOptions">
+		<div class="Top">
+			<Clock />
+			<Date />
+			<Weather />
+		</div>
 
 		<div class="Bottom">
 			<span class="Bottom__first" v-if="config.initial">
 				Right click to open settings...
 			</span>
-			<!-- <weather></weather>
-			<search-bar></search-bar> -->
 		</div>
 
 		<Transition name="Fade">
@@ -19,7 +19,7 @@
 		<!-- <Transition name="Dialog">
 			<settings v-if="isSettingVisible" @close="hideOptions"></settings>
 		</Transition> -->
-	</Background>
+	</ThemeSurface>
 </template>
 
 <style lang="less">
@@ -37,11 +37,19 @@
 
 		width: 100vw;
 		height: 100vh;
-		font-size: 10px;
+		font-size: max(18px, 2vmin);
 	}
 </style>
 
 <style lang="less" scoped>
+	.Top {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		padding-top: 4rem;
+		padding-left: 4rem;
+	}
+
 	.Bottom {
 		display: flex;
 		flex-direction: column;
@@ -52,7 +60,7 @@
 		right: 50px;
 
 		&__first {
-			color: #f1f2f3;
+			color: var(--theme-fill-primary);
 			font-size: 1rem;
 			font-family: var(--ui-font);
 		}
@@ -95,7 +103,7 @@
 
 <script lang="ts" setup>
 	import { ref } from 'vue';
-	import Background from '@/components/Background.vue';
+	import ThemeSurface from '@/components/ThemeSurface.vue';
 	import Clock from '@/components/widgets/Clock/Clock.vue';
 	import Date from '@/components/widgets/Date/Date.vue';
 	import Weather from '@/components/widgets/Weather/Weather.vue';

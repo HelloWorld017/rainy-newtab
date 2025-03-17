@@ -1,24 +1,14 @@
 <template>
-	<div class="Date" v-text="date" />
+	<div class="Date">
+		{{ date }}
+	</div>
 </template>
 
 <style lang="less" scoped>
 	.Date {
-		font-size: 3.6rem;
+		font-size: 1.5rem;
 		font-family: var(--ui-font);
-		color: var(--theme-vibrant);
-	}
-
-	@media (max-width: 1300px) {
-		.Date {
-			font-size: 2.4rem;
-		}
-	}
-
-	@media (max-width: 768px) {
-		.Date {
-			font-size: 2rem;
-		}
+		color: var(--theme-fill-primary);
 	}
 </style>
 
