@@ -1,2 +1,1 @@
-export const DEFAULT_IMAGE_URL =
-	'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=';
+export const DEFAULT_IMAGE_URL = 'https://picsum.photos/1920/1080';

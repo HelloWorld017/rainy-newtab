@@ -8,6 +8,7 @@
 	.Date {
 		font-size: 1.5rem;
 		font-family: var(--ui-font);
+		letter-spacing: -0.04em;
 		color: var(--theme-fill-primary);
 	}
 </style>

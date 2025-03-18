@@ -1,5 +1,8 @@
 <template>
-	<div class="Textbox">
+	<label class="Textbox">
+		<span class="Textbox__label">
+			<slot></slot>
+		</span>
 		<input
 			type="text"
 			autocomplete="off"
@@ -8,31 +11,38 @@
 			spellcheck="false"
 			v-model="model"
 		/>
-		<slot></slot>
-	</div>
+	</label>
 </template>
 
 <style lang="less" scoped>
 	.Textbox {
+		color: #ffffff;
 		font-family: var(--ui-font);
-		font-size: 0.8rem;
+		font-size: 14px;
 		display: flex;
 		flex-direction: column;
-		margin-top: 20px;
 		max-width: 400px;
+
+		&__label {
+			color: #c1c1c1;
+			padding-left: 4px;
+		}
 
 		& > input[type='text'] {
 			font-family: var(--ui-font);
-			font-size: 1.2rem;
-			padding: 5px 10px;
+			font-size: 16px;
+			padding: 12px 24px;
+			margin-top: 8px;
 			background: transparent;
 			border: none;
-			border-bottom: 2px solid #202020;
+			border: 1px solid #404040;
+			border-radius: 10px;
+			color: #ffffff;
 			outline: none;
 
 			&::selection {
-				background: #202020;
-				color: #f1f1f1;
+				background: #f1f1f1;
+				color: #202020;
 			}
 		}
 	}

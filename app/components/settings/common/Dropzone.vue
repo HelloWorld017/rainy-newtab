@@ -2,25 +2,33 @@
 	<label
 		class="Dropzone"
 		:class="{ 'Dropzone--drop': isDragOver }"
-		@dragover="dragOver"
-		@dragleave="dragLeave"
-		@drop="drop"
+		@dragover="onDragOver"
+		@dragleave="onDragLeave"
+		@drop="onDrop"
 	>
 		<input class="Dropzone__upload" type="file" ref="upload" @change="handleUploadDialog" />
-		<i class="Dropzone__icon mdi mdi-plus"></i>
-		<slot></slot>
+		<PlusIcon class="Dropzone__icon" width="1em" height="1em" />
+		<slot />
 	</label>
 </template>
 
 <style lang="less" scoped>
 	.Dropzone {
-		background: #eaebec;
 		cursor: pointer;
+		border: 1px solid #404040;
+		border-radius: 16px;
+		color: #c1c1c1;
 		box-sizing: border-box;
 		outline: none;
 
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		padding: 30px 10px;
+
 		font-family: inherit;
-		font-size: 1rem;
+		font-size: 16px;
 		width: 100%;
 
 		transition: all 0.4s ease;
@@ -35,8 +43,7 @@
 		}
 
 		&__icon {
-			font-size: 1.5rem;
-			margin-right: 10px;
+			font-size: 24px;
 		}
 
 		&__upload {
@@ -46,71 +53,54 @@
 	}
 </style>
 
-<script>
-	export default {
-		data() {
-			return {
-				isDragOver: false,
-			};
-		},
+<script lang="ts" setup>
+	import { PlusIcon } from 'lucide-vue-next';
+	import { ref, useTemplateRef } from 'vue';
 
-		methods: {
-			handleUploadTransfer(dataTransfer) {
-				let blob = null;
+	const isDragOver = ref(false);
 
-				for (let item of dataTransfer.items) {
-					if (item.kind !== 'file') {
-						continue;
-					}
-					blob = item.getAsFile();
-					break;
-				}
+	const emit = defineEmits<{ upload: [File] }>();
+	const handleUpload = (file: File) => emit('upload', file);
+	const handleUploadTransfer = (dataTransfer: DataTransfer) => {
+		const blob = Array.from(dataTransfer.items)
+			.find(item => item.kind === 'file')
+			?.getAsFile();
 
-				if (blob) {
-					this.handleUpload(blob);
-				}
-			},
+		if (blob) {
+			handleUpload(blob);
+		}
+	};
 
-			handleUploadDialog(event) {
-				const files = this.$refs.upload.files;
-				if (!files) {
-					return;
-				}
-				if (files.length < 1) {
-					return;
-				}
+	const uploadInput = useTemplateRef<HTMLInputElement>('upload');
+	const handleUploadDialog = () => {
+		const file = uploadInput.value?.files?.[0];
+		if (file) {
+			handleUpload(file);
+			uploadInput.value.value = '';
+		}
+	};
 
-				this.handleUpload(files[0]);
-				this.$refs.upload.value = '';
-			},
+	const handleDragEvent = (event: DragEvent) => {
+		event.preventDefault();
+		event.stopPropagation();
+	};
 
-			handleUpload(file) {
-				this.$emit('upload', file);
-			},
+	const onDragOver = (event: DragEvent) => {
+		handleDragEvent(event);
+		isDragOver.value = true;
+	};
 
-			handleDrag(ev) {
-				ev.preventDefault();
-				ev.stopPropagation();
-			},
+	const onDragLeave = (event: DragEvent) => {
+		handleDragEvent(event);
+		isDragOver.value = false;
+	};
 
-			dragOver(ev) {
-				this.handleDrag(ev);
-				this.isDragOver = true;
-			},
+	const onDrop = (event: DragEvent) => {
+		handleDragEvent(event);
+		isDragOver.value = false;
 
-			dragLeave(ev) {
-				this.handleDrag(ev);
-				this.isDragOver = false;
-			},
-
-			drop(ev) {
-				this.handleDrag(ev);
-				this.isDragOver = false;
-
-				if (ev.dataTransfer) {
-					this.handleUploadTransfer(ev.dataTransfer);
-				}
-			},
-		},
+		if (event.dataTransfer) {
+			handleUploadTransfer(event.dataTransfer);
+		}
 	};
 </script>

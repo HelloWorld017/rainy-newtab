@@ -1,7 +1,9 @@
 <template>
 	<label class="Checkbox">
-		<input type="checkbox" v-model="_value" />
-		<div class="Checkbox__decorator"></div>
+		<input type="checkbox" v-model="model" />
+		<span class="Checkbox__decorator">
+			<CheckIcon width="1em" height="1em" strokeWidth="4" class="Checkbox__icon" />
+		</span>
 		<slot></slot>
 	</label>
 </template>
@@ -11,17 +13,28 @@
 		cursor: pointer;
 		display: flex;
 		align-items: center;
+		color: #c1c1c1;
 		font-family: var(--ui-font);
-		font-size: 1rem;
+		font-size: 16px;
 
 		&__decorator {
-			display: block;
-			width: 10px;
-			height: 10px;
-			border: 2px solid #202020;
-			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+
+			width: 18px;
+			height: 18px;
+			border: 1px solid #404040;
+			border-radius: 6px;
 			margin-right: 12px;
 
+			transition: all 0.4s ease;
+		}
+
+		&__icon {
+			font-size: 12px;
+			color: #000000;
+			opacity: 0;
 			transition: all 0.4s ease;
 		}
 
@@ -32,28 +45,18 @@
 		}
 
 		& > input[type='checkbox']:checked + &__decorator {
-			border-color: #00bcd4;
-			background: #00bcd4;
+			border-color: #ffffff;
+			background: #ffffff;
+		}
+
+		& > input[type='checkbox']:checked + &__decorator > &__icon {
+			opacity: 1;
 		}
 	}
 </style>
 
-<script>
-	export default {
-		props: {
-			modelValue: String,
-		},
+<script lang="ts" setup>
+	import { CheckIcon } from 'lucide-vue-next';
 
-		computed: {
-			_value: {
-				get() {
-					return this.modelValue === 'true';
-				},
-
-				set(value) {
-					this.$emit('update:modelValue', value.toString());
-				},
-			},
-		},
-	};
+	const model = defineModel<boolean>();
 </script>

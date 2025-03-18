@@ -77,7 +77,11 @@ export default ts.config(
 				{
 					'groups': [
 						'builtin',
-						['external', 'internal', 'parent', 'index', 'sibling'],
+						'external',
+						'internal',
+						'parent',
+						'index',
+						'sibling',
 						'type',
 					],
 					'newlines-between': 'ignore',
@@ -118,10 +122,22 @@ export default ts.config(
 		},
 	},
 	{
-		files: ['app/definitions/*.ts', 'eslint.config.js', 'vite.config.ts'],
+		files: ['app/**/*.vue'],
+		rules: {
+			'import-x/no-default-export': 'off',
+		},
+	},
+	{
+		files: ['app/definitions/*.ts'],
 		rules: {
 			'import-x/no-default-export': 'off',
 			'no-var': 'off',
+		},
+	},
+	{
+		files: ['eslint.config.js', 'vite.config.ts'],
+		rules: {
+			'import-x/no-default-export': 'off',
 		},
 	}
 );

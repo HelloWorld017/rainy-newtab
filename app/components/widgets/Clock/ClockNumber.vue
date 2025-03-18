@@ -1,11 +1,11 @@
 <template>
-	<Transition name="Number" mode="out-in">
+	<Transition name="TransitionNumber" mode="out-in">
 		<Component :is="numTexts[+number]" :key="number" height="1em" />
 	</Transition>
 </template>
 
 <style lang="less" scoped>
-	.Number {
+	.TransitionNumber {
 		&-enter-active,
 		&-leave-active {
 			transition: all 0.3s ease;

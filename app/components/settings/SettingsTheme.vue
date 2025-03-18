@@ -1,66 +1,60 @@
 <template>
 	<div class="SettingsTheme">
-		<h1>Theme</h1>
-
 		<div class="SettingsTheme__list">
-			<div class="SettingsTheme__item ThemeItem" v-for="(theme, hash) in themes" :key="hash">
-				<a class="ThemeItem__delete" @click="deleteTheme(hash)">
-					<i class="mdi mdi-close"></i>
+			<div class="SettingsTheme__item ThemeItem" v-for="(theme, key) in themes" :key="key">
+				<a class="ThemeItem__delete" @click="onDeleteTheme(key)">
+					<XIcon width="1em" height="1em" />
 				</a>
 
-				<img class="ThemeItem__thumb" :src="theme.thumb" />
+				<img class="ThemeItem__thumbnail" :src="theme.thumbnail" />
 				<div class="ThemeItem__colors">
 					<div
 						class="ThemeItem__color Color"
-						v-for="(color, styleId) in theme.style"
-						:key="styleId"
+						v-for="(color, styleKey) in theme.style"
+						:key="styleKey"
 					>
 						<div
 							class="Color__view"
 							:style="{ background: color }"
-							@click="showPicker(hash, styleId, $event)"
-						></div>
-
-						<span class="Color__text">
-							{{ getReadableName(styleId) }}
-						</span>
+							@click="onShowPicker(key, styleKey, $event)"
+						/>
 					</div>
 				</div>
 			</div>
 
-			<dropzone class="SettingsTheme__item" @upload="addTheme">
-				Click or Drop to Add
-			</dropzone>
+			<Dropzone class="SettingsTheme__item" @upload="onAddTheme">
+				Click / Drop Images
+			</Dropzone>
 		</div>
 
-		<chrome-picker
-			class="SettingsTheme__picker"
-			v-if="picker"
-			:style="pickerStyle"
-			:value="pickerColor"
-			@input="
-				pickerColor = `rgba(${$event.rgba.r}, ${$event.rgba.g}, ${$event.rgba.b}, ${$event.rgba.a})`
-			"
-			v-click-outside="closePicker"
-		>
-		</chrome-picker>
+		<Transition name="TransitionFade">
+			<div
+				class="SettingsTheme__picker"
+				:style="pickerStyle"
+				v-if="picker"
+				v-click-outside="onClosePicker"
+			>
+				<ChromePicker :model-value="pickerColor!" @update:model-value="onUpdatePicker">
+					{{ getReadableStyleKey(picker.target[1]) }}
+				</ChromePicker>
+			</div>
+		</Transition>
 	</div>
 </template>
 
 <style lang="less" scoped>
 	.SettingsTheme {
-		display: flex;
-		flex-direction: column;
-		align-items: stretch;
+		position: relative;
 
-		margin-top: 30px;
+		&__list {
+			display: flex;
+			flex-direction: column;
+		}
 
 		&__item {
-			background: #eaebec;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			padding: 30px 10px;
 
 			&:not(:last-child) {
 				margin-bottom: 30px;
@@ -68,24 +62,42 @@
 		}
 
 		&__picker {
-			position: fixed;
+			position: absolute;
 		}
 	}
 
 	.ThemeItem {
 		position: relative;
+		display: flex;
+		flex-direction: column;
+		width: min(300px, 50%);
+		aspect-ratio: 1 / 1;
+		border-radius: 20px;
+		overflow: hidden;
+
+		&__thumbnail {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
 
 		&__colors {
-			margin-left: 20px;
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+			background: rgba(32, 32, 32, 0.8);
+			padding: 10px;
+			box-sizing: border-box;
 		}
 
 		&__delete {
 			cursor: pointer;
 			position: absolute;
-			top: 5px;
-			right: 5px;
-			font-size: 2rem;
-			color: #202020;
+			top: 12px;
+			right: 12px;
+			font-size: 24px;
+			color: #ffffff;
+			filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.3));
 		}
 	}
 
@@ -101,8 +113,8 @@
 			cursor: pointer;
 			width: 20px;
 			height: 20px;
-			border-radius: 50%;
-			border: 1px solid #a1a2a3;
+			border-radius: 8px;
+			border: 1px solid rgba(255, 255, 255, 0.2);
 		}
 
 		&__text {
@@ -111,118 +123,128 @@
 	}
 </style>
 
-<script>
-	import ClickOutside from 'v-click-outside';
-	import { Chrome } from 'vue-color';
-	import Dropzone from '../components/Dropzone.vue';
+<script lang="ts" setup>
+	import { Chrome as ChromePicker } from '@ckpack/vue-color';
+	import { XIcon } from 'lucide-vue-next';
+	import { computed, onMounted, ref } from 'vue';
+	import { directive as vClickOutside } from 'vue3-click-away';
 
-	import DefaultStyle from '../src/DefaultStyle';
-	import FileSystem from '../src/FileSystem';
+	import { MOCK_THEME } from '@/constants/mock';
+	import { ZColor } from '@/schemas/ThemeStyle';
+	import {
+		addTheme,
+		deleteTheme,
+		getThemeKeys,
+		getThemeStyle,
+		getThemeThumbnail,
+		updateThemeStyle,
+	} from '@/utils/theme';
+	import Dropzone from './common/Dropzone.vue';
+	import type { ThemeStyle } from '@/schemas/ThemeStyle';
 
-	export default {
-		data() {
-			return {
-				themes: {},
-				picker: null,
-			};
-		},
-
-		computed: {
-			pickerStyle() {
-				return {
-					left: `${this.picker.x}px`,
-					top: `${this.picker.y}px`,
-				};
-			},
-
-			pickerColor: {
-				get() {
-					return this.themes[this.picker.targetHash].style[this.picker.targetStyle];
-				},
-
-				set(val) {
-					this.themes[this.picker.targetHash].style[this.picker.targetStyle] = val;
-				},
-			},
-		},
-
-		methods: {
-			async addTheme(blob) {
-				const url = URL.createObjectURL(blob);
-				const image = new Image();
-				await new Promise((resolve, reject) => {
-					image.onload = () => resolve();
-					image.onerror = () => reject();
-					image.src = url;
-				});
-
-				await FileSystem.addImage(image);
-				URL.revokeObjectURL(image);
-
-				await this.refresh();
-			},
-
-			async deleteTheme(hash) {
-				await FileSystem.deleteImage(hash);
-				await this.refresh();
-			},
-
-			async refresh() {
-				const themeKeys = await FileSystem.keyImages();
-				const themes = {};
-
-				for (let hash of themeKeys) {
-					const thumb = await FileSystem.getImage(hash, true);
-					const style = await FileSystem.getRaw(`theme/style-${hash}`, DefaultStyle);
-
-					themes[hash] = { hash, thumb, style };
-				}
-
-				this.themes = themes;
-			},
-
-			getReadableName(name) {
-				return (
-					name[0].toUpperCase() +
-					name.slice(1).replace(/-([a-z])/g, (_, p1) => ` ${p1.toUpperCase()}`)
-				);
-			},
-
-			async showPicker(hash, styleId, event) {
-				if (this.picker) {
-					await this.closePicker();
-				}
-
-				const rect = event.target.getBoundingClientRect();
-				this.picker = {
-					x: rect.x + 40,
-					y: rect.y + 40,
-					targetHash: hash,
-					targetStyle: styleId,
-				};
-			},
-
-			async closePicker() {
-				await FileSystem.setRaw(
-					`theme/style-${this.picker.targetHash}`,
-					this.themes[this.picker.targetHash].style
-				);
-
-				this.picker = null;
-			},
-		},
-
-		async mounted() {
-			await this.refresh();
-		},
-
-		directives: {
-			ClickOutside: ClickOutside.directive,
-		},
-
-		components: {
-			ChromePicker: Chrome,
-			Dropzone,
-		},
+	type ThemeItem = {
+		key: string;
+		thumbnail: string;
+		style: ThemeStyle;
 	};
+
+	type PickerInfo = {
+		position: [number, number];
+		target: [string, keyof ThemeStyle];
+	};
+
+	const themes = ref<Record<string, ThemeItem>>({});
+	const picker = ref<PickerInfo | null>(null);
+	const pickerStyle = computed(
+		() =>
+			picker.value && {
+				left: `${picker.value.position[0]}px`,
+				top: `${picker.value.position[1]}px`,
+			}
+	);
+
+	const pickerColor = computed({
+		get: () =>
+			picker.value && themes.value[picker.value.target[0]].style[picker.value.target[1]],
+
+		set: val =>
+			val &&
+			picker.value &&
+			(themes.value[picker.value.target[0]].style[picker.value.target[1]] = val),
+	});
+
+	const refreshThemes = async () => {
+		const themeKeys = await getThemeKeys();
+		const newThemes: Record<string, ThemeItem> = {};
+
+		if (!__EXTENSION__) {
+			themes.value = MOCK_THEME;
+			return;
+		}
+
+		for (let key of themeKeys) {
+			const [thumbnail, style] = await Promise.all([
+				getThemeThumbnail(key),
+				getThemeStyle(key),
+			]);
+
+			newThemes[key] = { key, thumbnail: thumbnail!, style };
+		}
+
+		themes.value = newThemes;
+	};
+
+	const onAddTheme = async (blob: Blob) => {
+		const url = URL.createObjectURL(blob);
+		const image = new Image();
+		await new Promise<void>((resolve, reject) => {
+			image.onload = () => resolve();
+			image.onerror = () => reject(new Error('Failed to load image'));
+			image.src = url;
+		});
+
+		await addTheme(image);
+		await refreshThemes();
+		URL.revokeObjectURL(url);
+	};
+
+	const onDeleteTheme = async (key: string) => {
+		await deleteTheme(key);
+		await refreshThemes();
+	};
+
+	const onClosePicker = async () => {
+		if (!picker.value) {
+			return;
+		}
+
+		await updateThemeStyle(picker.value.target[0], {
+			...themes.value[picker.value.target[0]].style,
+			[picker.value.target[1]]: pickerColor.value!,
+		});
+
+		picker.value = null;
+	};
+
+	const onShowPicker = (key: string, styleKey: keyof ThemeStyle, event: MouseEvent) => {
+		if (picker.value) {
+			return onClosePicker();
+		}
+
+		const element = event.target as HTMLElement;
+		picker.value = {
+			position: [element.offsetLeft + 20, element.offsetTop - 20],
+			target: [key, styleKey],
+		};
+	};
+
+	const onUpdatePicker = ({ hex8 }: { hex8: string }) => {
+		pickerColor.value = ZColor.parse(hex8);
+	};
+
+	const getReadableStyleKey = (styleKey: keyof ThemeStyle) =>
+		styleKey[0].toUpperCase() +
+		styleKey.slice(1).replace(/-([a-z])/g, (_, p1: string) => ` ${p1.toUpperCase()}`);
+
+	onMounted(() => refreshThemes());
 </script>

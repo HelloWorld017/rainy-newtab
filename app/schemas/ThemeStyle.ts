@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const ZColor = z
 	.string()
-	.regex(/^#[0-9a-f]{3,}$/)
+	.regex(/^#[0-9a-f]{3,8}$/i)
 	.brand('color');
 
 export const ZThemeStyle = z.object({

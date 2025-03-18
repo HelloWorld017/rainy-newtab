@@ -48,15 +48,14 @@
     "vue-eslint-parser": "^10.1.1"
   },
   "dependencies": {
+    "@ckpack/vue-color": "^1.6.0",
     "@fontsource/geist-sans": "^5.0.3",
-    "@mdi/font": "^7.4.47",
+    "click-outside-vue3": "^4.0.1",
     "es-toolkit": "^1.33.0",
     "lucide-vue-next": "^0.482.0",
     "node-vibrant": "^4.0.3",
-    "v-click-outside": "^3.2.0",
-    "vue": "^3.4.27",
-    "vue-async-computed": "^4.0.1",
-    "vue-color": "^2.8.1",
+    "vue": "^3.5.13",
+    "vue3-click-away": "^1.2.4",
     "zod": "^3.24.2"
   }
 }

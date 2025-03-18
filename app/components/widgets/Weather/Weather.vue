@@ -22,6 +22,7 @@
 		font-size: 0.9rem;
 		font-weight: 400;
 		font-family: var(--ui-font);
+		letter-spacing: -0.025em;
 		color: var(--theme-fill-primary);
 		gap: 0.6rem;
 
@@ -80,7 +81,7 @@
 		const weatherResponse = __EXTENSION__
 			? await browser?.runtime.sendMessage<MessageWeatherRequest, MessageWeatherResponse>({
 					method: 'weather',
-					appId: appId!,
+					appId: appId,
 					location,
 				})
 			: MOCK_WEATHER_RESPONSE;

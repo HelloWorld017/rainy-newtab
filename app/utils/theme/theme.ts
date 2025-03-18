@@ -9,6 +9,7 @@ import { ZThemeStyle } from '@/schemas/ThemeStyle';
 import { browser } from '../browser';
 import { getDigest } from '../digest';
 import { encodeImage, getVibrantColor, resizeImage } from '../image';
+import type { ThemeStyle } from '@/schemas/ThemeStyle';
 
 const readStorageAsString = async (storageKey: string): Promise<string | null> =>
 	z.string().safeParse(await browser?.storage.local.get(storageKey)).data ?? null;
@@ -61,3 +62,6 @@ export const deleteTheme = async (key: string): Promise<void> => {
 		STORAGE_KEY_THEME_THUMB(key),
 	]);
 };
+
+export const updateThemeStyle = async (key: string, style: ThemeStyle) =>
+	browser?.storage.local.set({ [STORAGE_KEY_THEME_STYLE(key)]: style });

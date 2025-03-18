@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json.schemastore.org/chrome-manifest.json",
+	"manifest_version": 3,
+	"name": "Rainy NewTab",
+	"version": "2.0",
+	"description": "A neat new tab extension",
+
+	"icons": {
+		"16": "assets/icon16.png",
+		"48": "assets/icon48.png",
+		"128": "assets/icon128.png"
+	},
+
+	"content_security_policy": {
+	  "extension_pages": "default-src 'self'; img-src data: blob: 'self' https://picsum.photos; connect-src 'self' https://api.openweathermap.org"
+  },
+
+	"background": {
+		"service_worker": "worker.js",
+		"type": "module"
+	},
+
+	"chrome_url_overrides" : {
+		"newtab": "index.html"
+	},
+
+	"permissions": [
+		"storage",
+		"unlimitedStorage"
+	]
+}

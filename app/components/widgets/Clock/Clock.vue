@@ -24,6 +24,11 @@
 	.Clock {
 		font-size: 8rem;
 		color: var(--theme-fill-primary);
+		margin-left: -0.4rem;
+
+		@media (max-width: 384px) {
+			font-size: 6rem;
+		}
 
 		&,
 		::v-deep(&__unit) {
@@ -39,17 +44,21 @@
 		&__seconds {
 			font-size: 0.75em;
 			opacity: 0.5;
+
+			@media (max-width: 768px) {
+				display: none;
+			}
 		}
 	}
 </style>
 
 <script lang="ts" setup>
-	import ClockNumber from './ClockNumber.vue';
+	import { computed } from 'vue';
 	import DividerColon from '@/assets/svgs/DividerColon.svg?component';
 	import DividerSlash from '@/assets/svgs/DividerSlash.svg?component';
 	import SizeAnimated from '@/components/common/SizeAnimated.vue';
 	import { useInterval } from '@/composables/useInterval';
-	import { computed } from 'vue';
+	import ClockNumber from './ClockNumber.vue';
 
 	const asClockNumber = (number: number) => number.toString().padStart(2, '0').split('');
 	const current = useInterval(() => new Date(), 50);
