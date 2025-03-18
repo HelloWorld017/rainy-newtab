@@ -6,8 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:extension": "IS_EXTENSION=true vite",
-    "build": "IS_EXTENSION=true vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -45,7 +44,6 @@
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.1",
     "vite": "^5.2.12",
-    "vite-plugin-web-extension": "^4.4.3",
     "vite-svg-loader": "^5.1.0",
     "vue-eslint-parser": "^10.1.1"
   },

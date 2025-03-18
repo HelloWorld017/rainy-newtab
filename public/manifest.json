@@ -6,9 +6,9 @@
 	"description": "A neat new tab extension",
 
 	"icons": {
-		"16": "extension/assets/icon16.png",
-		"48": "extension/assets/icon48.png",
-		"128": "extension/assets/icon128.png"
+		"16": "assets/icon16.png",
+		"48": "assets/icon48.png",
+		"128": "assets/icon128.png"
 	},
 
 	"content_security_policy": {
@@ -16,7 +16,7 @@
   },
 
 	"background": {
-		"service_worker": "extension/worker.ts",
+		"service_worker": "worker.js",
 		"type": "module"
 	},
 
