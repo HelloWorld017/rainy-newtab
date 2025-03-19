@@ -1,12 +1,13 @@
 {
   "name": "rainy-newtab",
   "version": "2.0.0",
-  "description": "A neat new tab extension for chrome",
+  "description": "A neat new tab extension",
   "main": "manifest.json",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build:firefox": "TARGET=firefox vite build",
+    "build:chrome": "TARGET=chrome vite build",
     "lint": "eslint .",
     "typecheck": "vue-tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,6 +18,7 @@
   },
   "keywords": [
     "chrome",
+    "firefox",
     "extension",
     "newtab",
     "ntp"
