@@ -38,6 +38,7 @@
 		padding: 0;
 		margin: 0;
 
+		background: #303030;
 		width: 100vw;
 		height: 100vh;
 		font-size: max(18px, 2vmin);
@@ -52,6 +53,26 @@
 		&-enter-from,
 		&-leave-to {
 			opacity: 0;
+		}
+	}
+
+	.TransitionGroupFade {
+		&-enter-active,
+		&-leave-active {
+			transition: all 0.4s ease;
+		}
+
+		&-enter-from,
+		&-leave-to {
+			opacity: 0;
+		}
+
+		&-leave-to {
+			position: absolute;
+		}
+
+		&-move {
+			transition: all 0.4s ease;
 		}
 	}
 </style>

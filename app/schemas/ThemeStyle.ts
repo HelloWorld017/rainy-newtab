@@ -1,12 +1,8 @@
 import { z } from 'zod';
-
-export const ZColor = z
-	.string()
-	.regex(/^#[0-9a-f]{3,8}$/i)
-	.brand('color');
+import { ZColor } from './Color';
 
 export const ZThemeStyle = z.object({
-	'fill-primary': ZColor.default('#ffffff'),
+	'fill-primary': ZColor.default('#fff'),
 });
 
 export type ThemeStyle = z.TypeOf<typeof ZThemeStyle>;

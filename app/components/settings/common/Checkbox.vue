@@ -36,6 +36,7 @@
 			color: #000000;
 			opacity: 0;
 			transition: all 0.4s ease;
+			transform: translateY(2px);
 		}
 
 		& > input[type='checkbox'] {

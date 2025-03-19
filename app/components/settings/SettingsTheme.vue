@@ -1,30 +1,36 @@
 <template>
 	<div class="SettingsTheme">
 		<div class="SettingsTheme__list">
-			<div class="SettingsTheme__item ThemeItem" v-for="(theme, key) in themes" :key="key">
-				<a class="ThemeItem__delete" @click="onDeleteTheme(key)">
-					<XIcon width="1em" height="1em" />
-				</a>
+			<TransitionGroup name="TransitionGroupFade">
+				<div
+					class="SettingsTheme__item ThemeItem"
+					v-for="(theme, key) in themes"
+					:key="key"
+				>
+					<a class="ThemeItem__delete" @click="onDeleteTheme(key)">
+						<XIcon width="1em" height="1em" />
+					</a>
 
-				<img class="ThemeItem__thumbnail" :src="theme.thumbnail" />
-				<div class="ThemeItem__colors">
-					<div
-						class="ThemeItem__color Color"
-						v-for="(color, styleKey) in theme.style"
-						:key="styleKey"
-					>
+					<img class="ThemeItem__thumbnail" :src="theme.thumbnail" />
+					<div class="ThemeItem__colors">
 						<div
-							class="Color__view"
-							:style="{ background: color }"
-							@click="onShowPicker(key, styleKey, $event)"
-						/>
+							class="ThemeItem__color Color"
+							v-for="(color, styleKey) in theme.style"
+							:key="styleKey"
+						>
+							<div
+								class="Color__view"
+								:style="{ background: color }"
+								@click="onShowPicker(key, styleKey, $event)"
+							/>
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<Dropzone class="SettingsTheme__item" @upload="onAddTheme">
-				Click / Drop Images
-			</Dropzone>
+				<Dropzone class="SettingsTheme__item" @upload="onAddTheme">
+					Click / Drop Images
+				</Dropzone>
+			</TransitionGroup>
 		</div>
 
 		<Transition name="TransitionFade">
@@ -48,17 +54,8 @@
 
 		&__list {
 			display: flex;
-			flex-direction: column;
-		}
-
-		&__item {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-
-			&:not(:last-child) {
-				margin-bottom: 30px;
-			}
+			flex-wrap: wrap;
+			gap: 30px;
 		}
 
 		&__picker {
@@ -70,7 +67,7 @@
 		position: relative;
 		display: flex;
 		flex-direction: column;
-		width: min(300px, 50%);
+		width: calc(max(230px, 33%) - 30px);
 		aspect-ratio: 1 / 1;
 		border-radius: 20px;
 		overflow: hidden;
@@ -130,7 +127,7 @@
 	import { directive as vClickOutside } from 'vue3-click-away';
 
 	import { MOCK_THEME } from '@/constants/mock';
-	import { ZColor } from '@/schemas/ThemeStyle';
+	import { ZColor } from '@/schemas/Color';
 	import {
 		addTheme,
 		deleteTheme,
@@ -231,9 +228,13 @@
 			return onClosePicker();
 		}
 
-		const element = event.target as HTMLElement;
+		const container = (event.target as HTMLElement).closest('.ThemeItem');
+		if (!(container instanceof HTMLElement)) {
+			return;
+		}
+
 		picker.value = {
-			position: [element.offsetLeft + 20, element.offsetTop - 20],
+			position: [container.offsetLeft + 20, container.offsetTop + 20],
 			target: [key, styleKey],
 		};
 	};

@@ -2,12 +2,14 @@ import { throttle } from 'es-toolkit';
 import { STORAGE_KEY_CONFIG } from '@/constants/storage';
 import { ZConfig } from '@/schemas/Config';
 import { browser } from '@/utils/browser';
+import { readStorage } from '../storage';
 
-const configInner = await (async () => {
-	const defaultConfig = ZConfig.parse({});
-	const configRaw = await browser?.storage.sync.get(STORAGE_KEY_CONFIG);
-	return ZConfig.safeParse(configRaw).data ?? defaultConfig;
-})();
+const configInner = await readStorage({
+	storageKind: 'sync',
+	key: STORAGE_KEY_CONFIG,
+	schema: ZConfig,
+	defaultValue: ZConfig.parse({}),
+});
 
 export type ConfigProxy<T> = T extends object
 	? ConfigProxyMethods<T> & { [K in keyof T]: ConfigProxy<T[K]> }
@@ -28,7 +30,7 @@ const createConfigProxy = <T>(object: T): ConfigProxy<T> => {
 	const proxyMaps = new Map<keyof T, unknown>();
 	const proxyMethods: ConfigProxyMethods<T> = {
 		$subscribe: (key, callback) => {
-			if (subscriptions.has(key)) {
+			if (!subscriptions.has(key)) {
 				subscriptions.set(key, new Set());
 			}
 
@@ -56,9 +58,7 @@ const createConfigProxy = <T>(object: T): ConfigProxy<T> => {
 			if (!proxyMaps.has(key as keyof T)) {
 				const proxy = createConfigProxy(value as Record<string, unknown>);
 				proxyMaps.set(key as keyof T, proxy);
-				proxy.$subscribe(null, () => {
-					onUpdate(key as keyof T);
-				});
+				proxy.$subscribe(null, () => onUpdate(key as keyof T));
 			}
 
 			return proxyMaps.get(key as keyof T)!;
@@ -76,8 +76,7 @@ const createConfigProxy = <T>(object: T): ConfigProxy<T> => {
 export const config = createConfigProxy(configInner);
 config.$subscribe(
 	null,
-	throttle(
-		() => browser?.storage.sync.set({ [STORAGE_KEY_CONFIG]: configInner })?.catch(() => {}),
-		2000
-	)
+	throttle(() => {
+		browser?.storage.sync.set({ [STORAGE_KEY_CONFIG]: configInner })?.catch(() => {});
+	}, 2000)
 );

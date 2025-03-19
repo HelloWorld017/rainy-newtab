@@ -38,8 +38,7 @@
 		}
 
 		&&--drop {
-			background: #00bcd4;
-			color: #f1f2f3;
+			border-color: #0064ff;
 		}
 
 		&__icon {

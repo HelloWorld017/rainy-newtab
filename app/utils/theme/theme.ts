@@ -9,35 +9,37 @@ import { ZThemeStyle } from '@/schemas/ThemeStyle';
 import { browser } from '../browser';
 import { getDigest } from '../digest';
 import { encodeImage, getVibrantColor, resizeImage } from '../image';
+import { readStorage } from '../storage';
+import { createThemeStyleByPalette } from './createThemeStyleByPalette';
 import type { ThemeStyle } from '@/schemas/ThemeStyle';
 
-const readStorageAsString = async (storageKey: string): Promise<string | null> =>
-	z.string().safeParse(await browser?.storage.local.get(storageKey)).data ?? null;
-
 export const getThemeImage = async (key: string) =>
-	readStorageAsString(STORAGE_KEY_THEME_IMAGE(key));
+	readStorage({ key: STORAGE_KEY_THEME_IMAGE(key), schema: z.string(), defaultValue: null });
 
 export const getThemeThumbnail = async (key: string) =>
-	readStorageAsString(STORAGE_KEY_THEME_THUMB(key));
+	readStorage({ key: STORAGE_KEY_THEME_THUMB(key), schema: z.string(), defaultValue: null });
 
 export const getThemeStyle = async (key: string) =>
-	ZThemeStyle.safeParse(await browser?.storage.local.get(STORAGE_KEY_THEME_THUMB(key))).data ??
-	ZThemeStyle.parse({});
+	readStorage({
+		key: STORAGE_KEY_THEME_STYLE(key),
+		schema: ZThemeStyle,
+		defaultValue: ZThemeStyle.parse({}),
+	});
 
-export const getThemeKeys = async (): Promise<string[]> => {
-	const keys = await browser?.storage.local.get(STORAGE_KEY_THEME_KEYS);
-	return z.array(z.string()).safeParse(keys).data ?? [];
-};
+export const getThemeKeys = async (): Promise<string[]> =>
+	readStorage({
+		key: STORAGE_KEY_THEME_KEYS,
+		schema: z.array(z.string()),
+		defaultValue: [],
+	});
 
 export const addTheme = async (image: HTMLImageElement): Promise<void> => {
 	if (image.naturalWidth < 300 || image.naturalHeight < 200) {
 		throw new Error('Image is too small!');
 	}
 
-	const themeStyle = getVibrantColor(image).then(palette =>
-		ZThemeStyle.parse({
-			'fill-primary': palette.Vibrant?.hex,
-		})
+	const themeStylePromise = getVibrantColor(image).then(palette =>
+		createThemeStyleByPalette(palette)
 	);
 
 	const dataUrl = encodeImage(resizeImage(image, image.naturalWidth, image.naturalHeight));
@@ -48,7 +50,7 @@ export const addTheme = async (image: HTMLImageElement): Promise<void> => {
 		[STORAGE_KEY_THEME_KEYS]: Array.from(new Set([...(await getThemeKeys()), digest])),
 		[STORAGE_KEY_THEME_IMAGE(digest)]: dataUrl,
 		[STORAGE_KEY_THEME_THUMB(digest)]: thumbDataUrl,
-		[STORAGE_KEY_THEME_STYLE(digest)]: themeStyle,
+		[STORAGE_KEY_THEME_STYLE(digest)]: await themeStylePromise,
 	});
 };
 
@@ -60,6 +62,7 @@ export const deleteTheme = async (key: string): Promise<void> => {
 	await browser?.storage.local.remove([
 		STORAGE_KEY_THEME_IMAGE(key),
 		STORAGE_KEY_THEME_THUMB(key),
+		STORAGE_KEY_THEME_STYLE(key),
 	]);
 };
 

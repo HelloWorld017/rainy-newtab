@@ -1,7 +1,7 @@
 import { onMounted, onUnmounted, ref } from 'vue';
-import type { UnwrapRef } from 'vue';
+import type { Ref, UnwrapRef } from 'vue';
 
-export const useInterval = <T>(onTick: () => T, interval: number) => {
+export const useInterval = <T>(onTick: () => T, interval: number): Ref<T> => {
 	let intervalId: ReturnType<typeof setTimeout> | null = null;
 	const current = ref(onTick());
 
@@ -17,5 +17,5 @@ export const useInterval = <T>(onTick: () => T, interval: number) => {
 		}
 	});
 
-	return current;
+	return current as Ref<T>;
 };

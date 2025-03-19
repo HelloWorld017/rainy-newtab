@@ -34,10 +34,10 @@
 
 			object-fit: cover;
 			object-position: center;
-			background-color: #303030;
 
 			opacity: 0;
 			transition: all 0.6s ease;
+			transform: translateZ(0);
 
 			&--loaded {
 				opacity: 1;
@@ -49,9 +49,21 @@
 <script lang="ts" setup>
 	import { ref, onBeforeMount } from 'vue';
 	import { DEFAULT_IMAGE_URL } from '@/constants/theme';
+	import { ZColor } from '@/schemas/Color';
 	import { getThemeKeys, getThemeImage, getThemeStyle } from '@/utils/theme';
+	import type { ThemeStyle } from '@/schemas/ThemeStyle';
 
-	const style = ref<Record<string, string>>({});
+	const transformThemeStyle = (themeStyle: ThemeStyle) =>
+		Object.fromEntries(
+			Object.entries(themeStyle).map(([key, color]) => [`--theme-${key}`, color] as const)
+		);
+
+	const style = ref<Record<string, string>>(
+		transformThemeStyle({
+			'fill-primary': ZColor.parse('#ffffff00'),
+		})
+	);
+
 	const url = ref('');
 	const isReadyToShow = ref(false);
 	const isLoaded = ref(false);
@@ -59,15 +71,11 @@
 	onBeforeMount(async () => {
 		const keys = await getThemeKeys();
 		const themeKey = keys[Math.floor(Math.random() * keys.length)];
-		const [themeStyle, themeImage] = await Promise.all([
-			getThemeStyle(themeKey),
-			getThemeImage(themeKey),
-		]);
+		const themeImagePromise = getThemeImage(themeKey);
+		const themeStyle = await getThemeStyle(themeKey);
 
-		url.value = themeImage ?? DEFAULT_IMAGE_URL;
-		style.value = Object.fromEntries(
-			Object.entries(themeStyle).map(([key, color]) => [`--theme-${key}`, color] as const)
-		);
+		style.value = transformThemeStyle(themeStyle);
+		url.value = (await themeImagePromise) ?? DEFAULT_IMAGE_URL;
 
 		isReadyToShow.value = true;
 	});
